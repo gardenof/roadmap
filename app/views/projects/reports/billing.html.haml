@@ -50,9 +50,9 @@
         =link_to month_set.label, project_billing_detail_path(@project, period_begin: url_date(p_begin), period_end: url_date(p_end))
 
       %td= month_set.total_cost
-      %td= month_set.feature_types.count
-      %td= month_set.bug_types.count
-      %td= month_set.chore_types.count
+      %td= month_set.feature_cost
+      %td= month_set.bug_cost
+      %td= month_set.chore_cost
 
 :javascript
   $(function() {
