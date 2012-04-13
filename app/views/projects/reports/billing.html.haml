@@ -9,10 +9,11 @@
   %p
     %b Period Ending:
     = text_field_tag :period_end, url_date(@period_end), class: 'datepicker'
+    = submit_tag 'Change Date'
 
 %p
   View
-  = link_to "Billing Detail", project_billing_detail_path(@project, period_begin: params[:period_begin], period_end: params[:period_end])
+  = link_to "Billing Detail", project_billing_detail_path(@project, period_start: params[:period_start], period_end: params[:period_end])
 %table.flipstone-chart{chart_options('data-chart-is_stacked' => 'true')}
   %thead
     %tr

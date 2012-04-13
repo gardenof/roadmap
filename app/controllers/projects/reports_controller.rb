@@ -44,7 +44,7 @@ module Projects
       before = (@period_end - 11.months)
       @period_start =
         begin
-          Date.parse(params[:period_begin]).to_time
+          Date.parse(params[:period_start]).to_time
         rescue
           Time.new(before.year, before.month, 1)
         end
