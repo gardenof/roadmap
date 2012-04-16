@@ -31,11 +31,10 @@ class Feature
       .where(:accepted_at.lte => period_end)
   end
 
-  scope :accepted_in_month, -> time do 
+  scope :accepted_in_month, -> time do
     period_begin = time.beginning_of_month
     t1 = time.end_of_month
     period_end = Time.new(t1.year, t1.month, t1.day, 23, 59, 59)
-
     accepted_in_period(period_begin, period_end)
   end
 

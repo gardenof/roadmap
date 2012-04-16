@@ -7,12 +7,12 @@
     %th Unestimated
     %th Project
     %th
-    %th 
+    %th
   - @bundles.each do |bundle|
     %tr
       %td= bundle.name
       %td= bundle.estimates_total
-      %td= bundle.unestimated_total
+      %td= bundle.unestimated_count
       %td= bundle.project.name
       %td= link_to 'Show', project_bundle_path(@project,bundle)
       %td= link_to 'Edit', edit_project_bundle_path(@project,bundle)
