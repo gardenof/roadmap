@@ -15,6 +15,10 @@
   - if @attached_features.any? 
     .features-attached
       %header #{@bundle.name.capitalize}
+      <center>Estimated total #{@bundle.estimates_total} <br>
+      Unestimated count #{@bundle.unestimated_count}</center>
+
+
       %ul
         - @attached_features.each do |feature|
           %li.clear
