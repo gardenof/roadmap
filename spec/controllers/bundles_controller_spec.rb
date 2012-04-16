@@ -2,50 +2,66 @@
 
 describe BundlesController do
   include BilgePump::Specs
-  
+
   model_scope [:project]
   model_class Bundle
 
-  def attributes_for_create 
+  def attributes_for_create
     { name: "Create Name"}
   end
 
-  def attributes_for_update 
+  def attributes_for_update
     { name: "Update Name"}
   end
 
 
   describe "show" do
-    let(:project) {Factory :project, name: "project101"}
+    let(:project) {Factory :project}
     let(:bundle)  {Factory :bundle, project_id: project.id}
-    let (:create_feature_with_hello_bundle_id) {
-          Factory :feature, bundle_ids: ["hello"], name: "not_attached",:project_id => project.id}
-    let(:create_feature_with_same_bundle_id) {
-          Factory :feature, bundle_ids: [bundle.id], name: "attached", :project_id => project.id}
 
-    it "shows features NOT attached to the bundle" do
-      project
-      bundle
-      create_feature_with_same_bundle_id
-      create_feature_with_hello_bundle_id
+    let (:show_params) {
+      {
+        project_id: project.to_param,
+        id: bundle.to_param
+      }
+    }
 
-      get :show, :project_id => project.id, :id => bundle.id
+    describe "@available_features" do
+      it "includes features attached to other bundles" do
+        other_feature = Factory :feature,
+          project_id: project.id, bundle_ids: ["hello"]
+        get :show, show_params
+        assigns(:available_features).should include other_feature
+      end
 
-      assigns(:available_features).should_not == []
-      assigns(:available_features)[0].name.should == create_feature_with_hello_bundle_id.name
-      
+      it "includes features not attached to ANY bundle" do
+        orphaned_feature = Factory :feature,
+          project_id: project.id, bundle_ids: []
+        get :show, show_params
+        assigns(:available_features).should include orphaned_feature
+      end
+
+      it "excludes features attached to this bundle" do
+        feature_in_the_bundle = Factory :feature,
+          project_id: project.id, bundle_ids: [bundle.id]
+        get :show, show_params
+        assigns(:available_features).should_not include feature_in_the_bundle
+      end
     end
 
-    it "shows features that are attached to the bundle" do
+    describe "@attached_features" do
+      it " includes features that are attached to the bundle" do
+        bundled_feature = Factory :feature,
+          project_id: project.id, bundle_ids: [bundle.id]
+        get :show, show_params
+        assigns(:attached_features).should include bundled_feature
+      end
 
-      bundle
-      create_feature_with_same_bundle_id
-      create_feature_with_hello_bundle_id
-
-      get :show, :project_id => project.id, :id => bundle.id
-
-      assigns(:available_features).should_not == []
-      assigns(:attached_features)[0].name.should == create_feature_with_same_bundle_id.name
+      it "excludes features that are not attached" do
+        other_feature = Factory :feature, project_id: project.id
+        get :show, show_params
+        assigns(:attached_features).should_not include other_feature
+      end
     end
   end
 end
