@@ -122,20 +122,6 @@ describe Feature do
     end
   end
 
-  describe "refreshed_at" do
-    it "invalidates updates once set" do
-      feature = Factory :feature, refreshed_at: 1.day.ago
-      feature.name = "Junk"
-      feature.should_not be_valid
-    end
-
-    it "is valid if not set" do
-      feature = Factory :feature, refreshed_at: nil
-      feature.name = "Junk"
-      feature.should be_valid
-    end
-  end
-
   describe "cost" do
     it "prices bugs at BugCost" do
       bug = Factory.build :feature, story_type: "bug", estimate: 100

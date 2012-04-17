@@ -39,6 +39,36 @@ describe FeaturesController do
     end
   end
 
+  describe "update" do
+    let (:updatable_feature) {Factory :feature, name: "before update", project_id: project.id}
+    let (:not_updatable_feature) {Factory :feature, story_id: 1123, project_id: project.id}
+    it "changes value" do
+      updatable_feature
+      put :update, project_id: project.to_param, 
+        id: updatable_feature.id, 
+        feature: {:name => "after update"}
+      updatable_feature.reload.name.should == "after update"
+    end
+
+    it "redirecting correctly when updatable" do
+      updatable_feature
+      put :update, project_id: project.to_param, :id => updatable_feature.id
+      assert_redirected_to project_feature_path(project, updatable_feature)
+    end
+
+    it "flash notice when not updatable" do
+      not_updatable_feature
+      put :update, project_id: project.to_param, :id => not_updatable_feature.id
+      flash.now[:notice].should_not be_nil
+    end
+
+    it "redirecting correctly when not updatable" do
+      not_updatable_feature
+      put :update, project_id: project.to_param, :id => not_updatable_feature.id
+      assert_redirected_to project_feature_path(project, not_updatable_feature)
+    end
+  end
+
   describe "schedule" do
     it "creates the feature in tracker" do 
       new_story = Factory.build :tracker_story
@@ -54,4 +84,5 @@ describe FeaturesController do
       assigns(:feature).story_id.should_not be_nil
     end
   end
+
 end

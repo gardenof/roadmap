@@ -14,9 +14,7 @@
 %div.bundle-details
   - if @attached_features.any? 
     .features-attached
-      %header #{@bundle.name.capitalize}
-      <center>Estimated total #{@bundle.estimates_total} <br>
-      Unestimated count #{@bundle.unestimated_count}</center>
+      %header #{@bundle.name.capitalize} #{@bundle.estimates_total}points #{@bundle.unestimated_count}Unestimated
 
 
       %ul

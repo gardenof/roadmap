@@ -23,7 +23,7 @@ class Feature
   many :bundles, :in => :bundle_ids
 
   scope :with_label, -> label do
-    where :labels => label
+    where :labels => label 
   end
 
   scope :accepted_in_period, -> period_start, period_end do
@@ -38,12 +38,14 @@ class Feature
     accepted_in_period(period_begin, period_end)
   end
 
-  validate :unchanged_after_refreshed
-
   def unchanged_after_refreshed
     if (changed? && refreshed_at_was.present? && !refreshed_at_changed?)
       errors.add(:base, "Can't update feature attributes after Tracker refresh")
     end
+  end
+
+  def updatable?
+    !story_id?
   end
 
   def cost

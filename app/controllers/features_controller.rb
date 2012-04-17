@@ -4,6 +4,28 @@ class FeaturesController < ApplicationController
   model_scope [:project]
   model_class Feature
 
+  def edit
+    @feature = Feature.find(params[:id])
+    if @feature.updatable?
+      edit_project_feature_path(@project, @feature)
+    else
+      flash[:notice] = "Can't update feature attributes after Tracker refresh"
+      redirect_to project_feature_path(@project, @feature)
+    end
+  end
+
+  def update
+    @feature = Feature.find(params[:id])
+    if @feature.updatable?
+      @feature.update_attributes(params[:feature])
+      redirect_to project_feature_path(@project, @feature)
+    else
+      flash[:notice] = "Can't update feature attributes after Tracker refresh"
+      redirect_to project_feature_path(@project, @feature)
+    end
+  end
+
+
   def tagged
     @features = Feature.with_label(params[:value]).all
     render 'index' , project_id: @project.id
