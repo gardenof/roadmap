@@ -7,7 +7,7 @@ Roadmap::Application.routes.draw do
     put 'run_refresh', controller: 'projects/refresh', action: :run_refresh
     get 'refresh', controller: 'projects/refresh', action: :refresh
     post 'schedule', controller: 'features', action: :schedule
-    post 'tracker_web_hook', controller: 'projects/features' , action: :tracker_web_hook
+    post 'tracker_web_hook', controller: 'features' , action: :tracker_web_hook
 
 
     resources :features do
