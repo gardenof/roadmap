@@ -11,6 +11,7 @@
     %th Tracker ID
     %th Bundles
     %th Schedule
+    %th buttons
     %tr
       %td= @feature.name
       %td= @feature.description
@@ -38,6 +39,7 @@
               = hidden_field_tag 'feature_id', @feature.id
               = submit_tag 'Schedule Feature',
               confirm: 'Are you sure?  This is synchronous for the moment'
+      %td= link_to 'Destroy', project_feature_path(@project,@feature), :confirm => 'Are you sure?', :method => :delete
 
 = link_to 'Edit', edit_project_feature_path(@project,@feature)
 \|
