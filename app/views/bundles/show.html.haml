@@ -1,21 +1,21 @@
 %div#notice= notice
 
 %div.bundle-header
-  %header 
+  %header
     #{@bundle.name}
     %span.desc
       #{@bundle.class}
-    .action-links 
+    .action-links
       = link_to 'Edit', edit_project_bundle_path(@project,@bundle)
       \|
       = link_to 'Back', project_bundles_path(@project)
 
 
 %div.bundle-details
-  - if @attached_features.any? 
+  - if @attached_features.any?
     .features-attached
       %header #{@bundle.name.capitalize}
-      %header #{@bundle.estimates_total} points #{@bundle.unestimated_count} Unestimated
+      %header #{@bundle.estimates_total} points, #{@bundle.unestimated_count} unestimated
 
 
       %ul
@@ -29,7 +29,7 @@
     .features-available
       %header Available Features
       %ul
-        - @available_features.each do |feature| 
+        - @available_features.each do |feature|
           %li.clear
             = feature.name
             = form_tag add_feature_project_bundle_path(@project,@bundle) do |f|
