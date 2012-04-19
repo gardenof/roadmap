@@ -56,7 +56,7 @@ task :set_env do
   set :nginx_cfg, {
     port: 80,
     ht_user: "planner",
-    ht_passwd: "planit!"
+    ht_passwd: "planit!",
     ht_off: ['/tracker_web_hook']
   }
 end
