@@ -13,13 +13,25 @@ describe ProjectsController do
   def attributes_for_update
     { name: "Update NAME" }
   end
+  describe "tracker_projects_not_in_roadmap" do 
+    it "returns 200 OK" do
+      project = Factory :project
+      get :show, id: project.to_param
+      response.should be_success
+    end
 
-  it "test" do
-    project1= Factory :project, id: 1000
-
-    get :index
-    assigns(:projects_not_in_roadmap).should == [tracker_project]
+    it "returns 404 not found" do
+      get :show, id: "no project"
+      response.should be_not_found
+    end
   end
 
+  describe "tracker_projects_not_in_roadmap" do 
+    it "should return project" do
+      project1= Factory :project, id: 1000
+      get :index
+      assigns(:projects_not_in_roadmap).should == [tracker_project]
+    end
+  end
 end
 
