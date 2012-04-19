@@ -36,17 +36,17 @@ describe TrackerIntegration do
 
   describe "check if tracker deleted" do
     it "sets type as deleted" do
-      story1 = Factory.build :tracker_story
-      feature = Factory :feature , :refreshed_at => Time.new(2009,1,03),:tracker_project_id => story1.id
+      tracker_story = Factory.build :tracker_story
+      project = Factory :project,
+        :tracker_project_id => tracker_story.id
+      feature = Factory :feature,
+        :refreshed_at => Time.new(2009,1,03),
+        :project_id => project.id
       refresh_time = Time.new(2012,2,03)
-
-      TrackerIntegration.mark_deleted_features(story1,refresh_time)
-      
+      TrackerIntegration.mark_deleted_features(tracker_story,refresh_time)
       feature.reload
       feature.story_type.should == "Deleted"
-
     end
-
   end
 
 
@@ -79,7 +79,9 @@ describe TrackerIntegration do
      
 
       project.should_receive(:stories).and_return(the_create_method)
-      the_create_method.should_receive(:create).with(name: feature.name, estimate: feature.estimate, labels: feature.labels, description: feature.description).and_return(some_tracker_story)
+      the_create_method.should_receive(:create).with(name: feature.name,
+       estimate: feature.estimate, labels: feature.labels,
+       description: feature.description).and_return(some_tracker_story)
       new_story = TrackerIntegration.create_story_for_project(project, feature)
 
       new_story.should == some_tracker_story

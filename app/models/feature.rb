@@ -14,7 +14,7 @@ class Feature
   key :refreshed_at,          Time
   key :story_id,              Integer
   key :story_type,            String
-  key :tracker_project_id,    Integer
+  
 
   key :project_id,            ObjectId
   belongs_to :project
@@ -84,7 +84,6 @@ class Feature
         end
 
       self.refreshed_at = refresh_time
-      self.tracker_project_id = story.project_id
       self.story_id = story.id
     else
       super(story)

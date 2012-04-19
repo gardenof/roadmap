@@ -63,8 +63,13 @@ module TrackerIntegration
   end
 
   def self.mark_deleted_features(tracker_project,refresh_time)
+      project =Project.find_by_tracker_project_id(tracker_project.id)
+      
       refresh_time_without_usec=refresh_time.change(:usec => 0)
-      Feature.set({:tracker_project_id => tracker_project.id, refreshed_at: { :$lt => refresh_time_without_usec }}, :story_type => "Deleted")
+
+      Feature.set({:project_id => project.id,
+        refreshed_at: { :$lt => refresh_time_without_usec }}, 
+        :story_type => "Deleted")
   end
 
 
@@ -74,7 +79,9 @@ module TrackerIntegration
   end
 
   def self.create_story_for_project(tracker_project, feature)
-    tracker_project.stories.create(name: feature.name, estimate: feature.estimate, labels: feature.labels, description: feature.description)
+    tracker_project.stories.create(name: feature.name, 
+      estimate: feature.estimate, labels: feature.labels, 
+      description: feature.description)
   end
 
 end
