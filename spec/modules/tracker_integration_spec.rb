@@ -35,17 +35,35 @@ describe TrackerIntegration do
   end
 
   describe "check if tracker deleted" do
+    let (:refresh_time) {Time.new(2012,2,03)}
+    let (:tracker_story) {Factory.build :tracker_story}
+    let (:project) {Factory :project,
+                            :tracker_project_id => tracker_story.id}
+    let (:feature) {Factory :feature,
+                            :refreshed_at => Time.new(2009,1,03),
+                            :project_id => project.id}
     it "sets type as deleted" do
-      tracker_story = Factory.build :tracker_story
-      project = Factory :project,
-        :tracker_project_id => tracker_story.id
-      feature = Factory :feature,
-        :refreshed_at => Time.new(2009,1,03),
-        :project_id => project.id
-      refresh_time = Time.new(2012,2,03)
+      feature
       TrackerIntegration.mark_deleted_features(tracker_story,refresh_time)
       feature.reload
       feature.story_type.should == "Deleted"
+    end
+
+    it "don't sets type as deleted" do 
+      feature
+      feature2 =Factory :feature,
+                        :refreshed_at => refresh_time,
+                        :project_id => project.id
+      TrackerIntegration.mark_deleted_features(tracker_story,refresh_time)
+      feature.reload
+      feature2.story_type.should == "feature"
+    end
+
+    it "sets type as deleted" do
+      feature
+      TrackerIntegration.mark_deleted_features(tracker_story,refresh_time)
+      feature.reload
+      feature.story_id.should == nil
     end
   end
 

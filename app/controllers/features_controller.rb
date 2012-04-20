@@ -25,6 +25,17 @@ class FeaturesController < ApplicationController
     end
   end
 
+  def destroy
+    @feature = Feature.find(params[:id])
+
+    if @feature.updatable? 
+      @feature.destroy
+      redirect_to project_path(@project)
+    else
+      flash[:notice] = "Can't delete feature attributes after Tracker refresh"
+      redirect_to project_feature_path(@project, @feature)
+    end
+  end
 
   def tagged
     @features = Feature.with_label(params[:value]).all

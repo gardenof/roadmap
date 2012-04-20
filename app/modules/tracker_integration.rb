@@ -69,7 +69,7 @@ module TrackerIntegration
 
       Feature.set({:project_id => project.id,
         refreshed_at: { :$lt => refresh_time_without_usec }}, 
-        :story_type => "Deleted")
+        :story_type => "Deleted", :story_id => nil)
   end
 
 
