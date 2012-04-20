@@ -87,15 +87,24 @@ describe FeaturesController do
 
   describe "tracker_web_hook" do
     let (:feature) {Factory :feature, story_id: 1123}
-    let (:params)  {{"activity"=>{"event_type"=>"story_update","stories"=>[{"id"=>feature.story_id,"name"=>"hello tracker change again", "labels"=>"features,labels", "owned_by"=>"Dont Want", "requested_by"=>"Dont Want"}]}, "controller"=>"projects/features", "action"=>"tracker_web_hook", "project_id"=>"roadmap"}}
+    let (:params_with_name_and_lables) {{"activity"=>{"event_type"=>"story_update",
+          "stories"=>[{"id"=>feature.story_id,"name"=>"hello tracker change again",
+          "labels"=>"features,labels", "owned_by"=>"Dont Want", "requested_by"=>"Dont Want"}]}}}
+
     it "checks event type" do
-      post :tracker_web_hook, params
+      post :tracker_web_hook, params_with_name_and_lables
       feature.reload.name.should == "hello tracker change again"
     end
 
     it "changes labels string to array" do
-      post :tracker_web_hook, params
+      post :tracker_web_hook, params_with_name_and_lables
       feature.reload.labels.should == ["features","labels"]
+    end
+
+    it "story_update with no name or labels"do
+      post :tracker_web_hook, {"activity"=>{"event_type"=>"story_update",
+        "stories"=>[{"id"=>feature.story_id,"description"=> "this is"}]}}
+      feature.reload.description.should == "this is"
     end
   end
 end

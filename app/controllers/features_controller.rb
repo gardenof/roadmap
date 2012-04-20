@@ -48,14 +48,22 @@ class FeaturesController < ApplicationController
   end
 
   def tracker_web_hook
-    event_type = params["activity"]['event_type']
-  	story_hash = params["activity"]["stories"][0]
-    story_updates = story_hash.deep_merge({:story_id =>story_hash["id"],:labels =>story_hash["labels"].split(',')}).slice(:story_id, :name, :description, :estimate, :labels, :story_type, :current_state)
-
-    if event_type == "story_update"
+    story_hash = params["activity"]["stories"][0]
+    if story_hash["labels"] != nil
+      labels = story_hash["labels"].split(',')
+    end
+    story_updates = story_hash.deep_merge({:story_id =>story_hash["id"],:labels => labels})
+                              .slice(:story_id,
+                                     :name,
+                                     :description,
+                                     :estimate,
+                                     :labels,
+                                     :story_type,
+                                     :current_state)
+    if params["activity"]['event_type'] == "story_update"
       feature = Feature.find_by_story_id(story_hash['id'].to_i)
       feature.update_attributes(story_updates)
-    	render text: "ok"
+      render text: "ok"
     end
   end 
 end
