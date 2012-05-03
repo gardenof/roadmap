@@ -47,7 +47,7 @@ class FeaturesController < ApplicationController
 
     # create the story in tracker
     story = TrackerIntegration.create_feature_in_tracker(
-      params[:tracker_project_id],
+      @feature.project.tracker_project_id,
       @feature
     )
     
