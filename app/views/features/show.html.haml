@@ -14,7 +14,8 @@
     %th buttons
     %tr
       %td= @feature.name
-      %td= @feature.description
+      %td
+        %pre= @feature.description
       %td= @feature.story_type
       %td= @feature.estimate
       %td
