@@ -64,4 +64,52 @@ describe BundlesController do
       end
     end
   end
+
+  describe "schedule action" do
+    it "works" do
+      project = Factory :project
+      bundle = Factory :bundle, project_id: project.id
+
+      post :schedule, {
+        project_id: bundle.project.to_param,
+        id: bundle.to_param
+      }
+
+      response.should be_redirect
+    end
+
+    def bundled_feature(bundle)
+      Factory :feature, {
+        story_id: nil,
+        bundle_ids: [bundle.id],
+        project_id: bundle.project.id
+      }
+    end
+
+    it "updates all the bundle's features with their new IDs" do
+      project = Factory :project
+      bundle = Factory :bundle, project_id: project.id
+
+      feature1 = bundled_feature(bundle)
+      feature2 = bundled_feature(bundle)
+
+      new_story = Factory.build :tracker_story
+      TrackerIntegration.stub(:create_feature_in_tracker).and_return(new_story)
+
+      # post project_id, bundle_id
+      post :schedule, {
+        project_id: bundle.project.to_param,
+        id: bundle.to_param
+      }
+
+      [feature1, feature2].each do |f|
+        f.reload
+        f.story_id.should == new_story.id
+      end
+    end
+
+    xit "calls tracker once for each feature in the bundle" do
+    end
+
+  end
 end

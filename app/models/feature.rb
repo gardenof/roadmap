@@ -12,9 +12,9 @@ class Feature
   key :name,                  String, required: true
   key :owned_by,              String
   key :refreshed_at,          Time
-  key :story_id,              Integer
+  key :story_id,              Integer # Pivotal Tracker's ID
   key :story_type,            String
-  
+
 
   key :project_id,            ObjectId
   belongs_to :project
@@ -23,7 +23,7 @@ class Feature
   many :bundles, :in => :bundle_ids
 
   scope :with_label, -> label do
-    where :labels => label 
+    where :labels => label
   end
 
   scope :accepted_in_period, -> period_start, period_end do
@@ -89,6 +89,13 @@ class Feature
       super(story)
     end
     self
+  end
+
+  def create_in_tracker
+    created_story = TrackerIntegration.create_feature_in_tracker(
+        self.project.tracker_project_id, self)
+
+    update(created_story)
   end
 
   protected

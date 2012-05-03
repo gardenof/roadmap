@@ -3,7 +3,7 @@ class BundlesController < ApplicationController
 
   model_scope [:project]
   model_class Bundle
-  
+
   def show
     @bundle = find_model(model_scope, params[:id])
     @available_features = Feature.where( :project_id => @bundle.project_id, :bundle_ids => { :$ne => @bundle.id } ).all
@@ -24,6 +24,18 @@ class BundlesController < ApplicationController
     bundle = Bundle.find(params[:id])
     feature.bundle_ids.delete(bundle.id)
     feature.save!
+    redirect_to project_bundle_path
+  end
+
+  def schedule
+    @bundle = find_model(model_scope, params[:id])
+    features_to_schedule = Feature.find_all_by_bundle_ids(@bundle.id)
+
+    features_to_schedule.each do |f|
+      f.create_in_tracker
+      f.save
+    end
+
     redirect_to project_bundle_path
   end
 

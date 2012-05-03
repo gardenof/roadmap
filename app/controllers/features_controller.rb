@@ -28,7 +28,7 @@ class FeaturesController < ApplicationController
   def destroy
     @feature = Feature.find(params[:id])
 
-    if @feature.updatable? 
+    if @feature.updatable?
       @feature.destroy
       redirect_to project_path(@project)
     else
@@ -46,13 +46,7 @@ class FeaturesController < ApplicationController
     @feature = Feature.find(params[:feature_id])
 
     # create the story in tracker
-    story = TrackerIntegration.create_feature_in_tracker(
-      @feature.project.tracker_project_id,
-      @feature
-    )
-    
-    # set tracker id and save
-    @feature.update(story)
+    @feature.create_in_tracker
     @feature.save
 
     redirect_to project_feature_path(@project, @feature)
@@ -76,5 +70,5 @@ class FeaturesController < ApplicationController
       feature.update_attributes(story_updates)
       render text: "ok"
     end
-  end 
+  end
 end
