@@ -75,7 +75,7 @@ describe FeaturesController do
       TrackerIntegration.stub(:create_feature_in_tracker).and_return(new_story)
            
       feature_to_schedule = 
-        Factory :feature, story_id: nil
+        Factory :feature, story_id: nil, project_id: project.id
       
       # PUT /features/run_schedule [params]
       post :schedule, project_id: project.id,
