@@ -33,9 +33,6 @@
         - if @feature.story_id == nil
           = form_tag(project_schedule_path(@project), method: :post) do
             %p
-              %span 
-              = hidden_field_tag 'tracker_project_id', @project.tracker_project_id
-            %p
               %span
               = hidden_field_tag 'feature_id', @feature.id
               = submit_tag 'Schedule Feature',
