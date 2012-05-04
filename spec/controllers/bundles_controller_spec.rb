@@ -66,19 +66,21 @@ describe BundlesController do
   end
 
   describe "schedule action" do
-    it "works" do
-      project = Factory :project
-      bundle = Factory :bundle, project_id: project.id
-
-      post :schedule, {
+    let (:project) { Factory :project}
+    let (:bundle) { Factory :bundle, project_id: project.id }
+    let (:schedule_params) {
+      {
         project_id: bundle.project.to_param,
         id: bundle.to_param
       }
+    }
 
+    it "works" do
+      post :schedule, schedule_params
       response.should be_redirect
     end
 
-    def bundled_feature(bundle)
+    def bundled_feature
       Factory :feature, {
         story_id: nil,
         bundle_ids: [bundle.id],
@@ -86,21 +88,16 @@ describe BundlesController do
       }
     end
 
-    it "updates all the bundle's features with their new IDs" do
-      project = Factory :project
-      bundle = Factory :bundle, project_id: project.id
+    let (:new_story) {
+      Factory.build :tracker_story
+    }
 
-      feature1 = bundled_feature(bundle)
-      feature2 = bundled_feature(bundle)
-
-      new_story = Factory.build :tracker_story
+    it "updates all the bundle's features with story attrs" do
+      feature1 = bundled_feature
+      feature2 = bundled_feature
       TrackerIntegration.stub(:create_feature_in_tracker).and_return(new_story)
 
-      # post project_id, bundle_id
-      post :schedule, {
-        project_id: bundle.project.to_param,
-        id: bundle.to_param
-      }
+      post :schedule, schedule_params
 
       [feature1, feature2].each do |f|
         f.reload
@@ -108,7 +105,12 @@ describe BundlesController do
       end
     end
 
-    xit "calls tracker once for each feature in the bundle" do
+    it "calls tracker once for each feature in the bundle" do
+      feature_count = rand(10)
+      feature_count.times { |i| bundled_feature }
+      TrackerIntegration.should_receive(:create_feature_in_tracker).exactly(feature_count).times.and_return(new_story)
+
+      post :schedule, schedule_params
     end
 
   end
