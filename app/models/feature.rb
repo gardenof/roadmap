@@ -4,6 +4,8 @@ class Feature
   BugCost = 0.25
   ChoreCost = 0.25
 
+  attr :tracker_errors
+
   key :accepted_at,           Time
   key :current_state,         String
   key :description,           String
@@ -36,6 +38,10 @@ class Feature
     t1 = time.end_of_month
     period_end = Time.new(t1.year, t1.month, t1.day, 23, 59, 59)
     accepted_in_period(period_begin, period_end)
+  end
+
+  def tracker_errors
+    @tracker_errors || []
   end
 
   def unchanged_after_refreshed
@@ -92,10 +98,19 @@ class Feature
   end
 
   def create_in_tracker
-    created_story = TrackerIntegration.create_feature_in_tracker(
-        self.project.tracker_project_id, self)
+    unless self.story_id.present?
+      created_story = TrackerIntegration.create_feature_in_tracker(
+        self.project.tracker_project_id, self
+      )
 
-    update(created_story)
+      if created_story.errors.any?
+        created_story.errors.each do |err|
+          @tracker_errors = tracker_errors << err
+        end
+      end
+
+      update(created_story)
+    end
   end
 
   protected

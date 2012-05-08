@@ -113,5 +113,40 @@ describe BundlesController do
       post :schedule, schedule_params
     end
 
+    it "returns successful message after successfully scheduling features" do 
+      feature = bundled_feature
+      TrackerIntegration.stub(:create_feature_in_tracker).and_return(new_story)
+
+      post :schedule, schedule_params   
+      
+      flash[:notice].should == 'All features have successfully been loaded onto Pivotal Tracker'
+    end
+
+    it " returns failed message after failed attempt to schedule features" do 
+      feature = bundled_feature
+      TrackerIntegration.stub(:create_feature_in_tracker).and_raise('poop')
+      post :schedule, schedule_params  
+
+      flash[:error].should include "Caught exception from Tracker on feature #{feature.name}"
+    end
+
+    it "has no features in its bundle" do 
+      TrackerIntegration.should_not_receive(:create_feature_in_tracker)
+      post :schedule, schedule_params
+      flash[:error].should include "Please add features to the bundle before scheduling."
+    end
+
+    it "returns appropriate message if pivotal tracker refuses our create" do 
+      msgs = ['Name cannot be blank', 'Eat turds and perish']
+      feature = bundled_feature
+
+      Feature.any_instance.stub(:create_in_tracker)
+      Feature.any_instance.stub(:tracker_errors).and_return(msgs)
+      
+      post :schedule, schedule_params
+
+      flash[:error].should == msgs.join(',')
+    end
+
   end
 end

@@ -141,4 +141,35 @@ describe Feature do
     end
   end
 
+  describe "create_in_tracker" do
+    it "adds Tracker validation failure to :tracker_errors" do
+      xml_errors = %{
+          <errors>
+            <error>OMG!</error>
+          </errors>
+      }
+
+      project = Factory :project, tracker_project_id: "ERK"
+
+      bad_story = Factory.build :tracker_story, name: nil
+      bad_story.errors.add_from_xml(xml_errors)
+      TrackerIntegration.stub(:create_feature_in_tracker).and_return(bad_story)
+
+      feature = Factory :feature, story_id: nil, project_id: project.id
+
+      feature.create_in_tracker
+
+      feature.tracker_errors.should include "OMG!"
+    end
+
+    it "makes no calls to Tracker if feature already exists" do
+      project = Factory :project
+      feature = Factory :feature, story_id: 10001, refreshed_at: Time.now, project_id: project.id
+      TrackerIntegration.should_not_receive(:create_feature_in_tracker)
+      feature.create_in_tracker
+    end
+
+  end
+
+
 end

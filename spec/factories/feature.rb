@@ -19,3 +19,4 @@ Factory.define :chore, class: Feature do |f|
   f.description { "Fix the thing." }
   f.labels { ["green", "black", "red"] }
 end
+

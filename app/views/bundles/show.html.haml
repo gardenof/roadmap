@@ -16,7 +16,8 @@
     .features-attached
       %header #{@bundle.name.capitalize}
       %header #{@bundle.estimates_total} points, #{@bundle.unestimated_count} unestimated
-
+      = form_tag schedule_project_bundle_path(@project, @bundle) do |f|
+        = submit_tag 'Send Bundle to Tracker', confirm: "This action will create in Tracker any features that have not yet been created in Tracker. Features preivoisly sent to Tracker will not be modified."
 
       %ul
         - @attached_features.each do |feature|
