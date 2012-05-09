@@ -54,6 +54,10 @@ class Feature
     !story_id?
   end
 
+  def accepted?
+    current_state.downcase == "accepted"
+  end
+
   def cost
     case story_type
       when TrackerIntegration::StoryType::Bug then BugCost

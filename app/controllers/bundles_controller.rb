@@ -6,7 +6,7 @@ class BundlesController < ApplicationController
 
   def show
     @bundle = find_model(model_scope, params[:id])
-    @available_features = Feature.where( :project_id => @bundle.project_id, :bundle_ids => { :$ne => @bundle.id } ).all
+    @available_features = Feature.where(:current_state => [nil, 'unstarted', 'unscheduled'],  :project_id => @bundle.project_id, :bundle_ids => { :$ne => @bundle.id } ).order(:current_state.asc).all
     @attached_features = Feature.find_all_by_bundle_ids(@bundle.id)
     respond_with @bundle
   end
@@ -44,15 +44,15 @@ class BundlesController < ApplicationController
         end
       rescue
         fail_messages << "Caught exception from Tracker on feature #{f.name}"
-      end 
+      end
     end
-    
+
     if fail_messages.any?
       flash[:error] = fail_messages.join(',')
     else
       flash[:notice] = 'All features have successfully been loaded onto Pivotal Tracker'
     end
-    
+
     redirect_to project_bundle_path
   end
 
