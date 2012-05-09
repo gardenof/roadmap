@@ -12,4 +12,6 @@
           = hidden_field_tag :feature_id, feature.id
           = submit_tag '-'
       .status-tags
-        = feature.current_state
+        = form_tag(project_feature_path(@project,feature), method: :put) do
+          = hidden_field_tag 'feature[ready_for_estimate_at]', Time.now
+          = submit_tag 'Ready to Estimate'

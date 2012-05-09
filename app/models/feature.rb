@@ -67,7 +67,7 @@ class Feature
   end
 
   def ready_to_schedule?
-    estimate.present?
+    estimate.present? || !updatable?
   end
 
   def cost

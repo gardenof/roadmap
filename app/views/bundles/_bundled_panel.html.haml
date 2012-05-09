@@ -13,7 +13,7 @@
           = hidden_field_tag :feature_id, feature.id
           = submit_tag '-'
       .status-tags
-        - if feature.story_id == nil
+        - if feature.updatable?
           = form_tag(project_schedule_path(@project), method: :post) do
             = hidden_field_tag 'feature_id', feature.id
             = submit_tag 'Schedule Feature',

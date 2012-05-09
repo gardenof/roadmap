@@ -11,3 +11,8 @@
         = form_tag remove_feature_project_bundle_path(@project,@bundle) do |f|
           = hidden_field_tag :feature_id, feature.id
           = submit_tag '-'
+      .status-tags
+        = form_tag(project_feature_path(@project,feature), method: :put) do
+          = text_field_tag 'feature[estimate]', nil, size: 3
+          = hidden_field_tag 'feature[ready_for_estimate_at]', Time.now
+          = submit_tag 'Save'

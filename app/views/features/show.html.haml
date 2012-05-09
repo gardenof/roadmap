@@ -1,5 +1,12 @@
 %p#notice= notice
 
+Feature is:
+%ul
+  %li Updateable? #{@feature.updatable?}
+  %li Ready to Schedule? #{@feature.ready_to_schedule?}
+  %li Ready for Estimate? #{@feature.ready_for_estimate?}
+  %li Needing Discussion? #{@feature.needs_discussion?}
+
 %table
   %tr
     %th Name
@@ -29,7 +36,7 @@
       %td
         - @feature.bundles.each do |b|
           = b.name
-      %td  
+      %td
         - if @feature.story_id == nil
           = form_tag(project_schedule_path(@project), method: :post) do
             %p
