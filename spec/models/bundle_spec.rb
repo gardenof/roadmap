@@ -76,4 +76,18 @@ describe "Bundle" do
       bundle.unestimated_count.should == 2
     end
   end
+
+  describe "features_ready_for_estimate" do
+    it "includes features ready_for_estimate" do
+      f = Factory :feature, bundle_ids: [bundle.id], ready_for_estimate_at: Time.now
+      bundle.features_ready_for_estimate.should include f
+    end
+  end
+
+  describe "features_ready_to_schedule" do
+    it "includes features with estimates" do
+      f = Factory :feature, bundle_ids: [bundle.id], estimate: 3
+      bundle.features_ready_to_schedule.should include f
+    end
+  end
 end

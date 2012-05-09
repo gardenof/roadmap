@@ -31,9 +31,19 @@ describe BundlesController do
       assigns(:available_features).should == bundle.available_features
     end
 
-    it "sets attached_features" do
+    it "sets bundled_features" do
       get :show, show_params
-      assigns(:attached_features).should == bundle.features
+      assigns(:bundled_features).should == bundle.features_ready_to_schedule
+    end
+
+    it "sets features_needing_discussion" do
+      get :show, show_params
+      assigns(:features_needing_discussion).should == bundle.features_needing_discussion
+    end
+
+    it "sets estimable_features" do
+      get :show, show_params
+      assigns(:estimable_features).should == bundle.features_ready_for_estimate
     end
   end
 

@@ -7,7 +7,9 @@ class BundlesController < ApplicationController
   def show
     @bundle = find_model(model_scope, params[:id])
     @available_features = @bundle.available_features
-    @attached_features = @bundle.features
+    @bundled_features = @bundle.features_ready_to_schedule
+    @estimable_features = @bundle.features_ready_for_estimate
+    @features_needing_discussion = @bundle.features_needing_discussion
     respond_with @bundle
   end
 
