@@ -33,7 +33,7 @@ describe BundlesController do
 
     it "sets attached_features" do
       get :show, show_params
-      assigns(:attached_features).should == bundle.attached_features
+      assigns(:attached_features).should == bundle.features
     end
   end
 

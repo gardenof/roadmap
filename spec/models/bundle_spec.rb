@@ -44,16 +44,16 @@ describe "Bundle" do
     end
   end
 
-  describe "attached_features" do
+  describe "features" do
     it "includes features that are attached to the bundle" do
       bundled_feature = Factory :feature,
         project_id: project.id, bundle_ids: [bundle.id]
-      bundle.attached_features.should include bundled_feature
+      bundle.features.should include bundled_feature
     end
 
     it "excludes features that are not attached" do
       other_feature = Factory :feature, project_id: project.id
-      bundle.attached_features.should_not include other_feature
+      bundle.features.should_not include other_feature
     end
   end
 

@@ -7,7 +7,7 @@ class BundlesController < ApplicationController
   def show
     @bundle = find_model(model_scope, params[:id])
     @available_features = @bundle.available_features
-    @attached_features = @bundle.attached_features
+    @attached_features = @bundle.features
     respond_with @bundle
   end
 

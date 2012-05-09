@@ -12,7 +12,7 @@ class Bundle
     Feature.where(:current_state => [nil, 'unstarted', 'unscheduled'], :project_id => project_id, :bundle_ids => { :$ne => id } ).order(:current_state.asc).all
   end
 
-  def attached_features
+  def features
     Feature.find_all_by_bundle_ids(id)
   end
 
