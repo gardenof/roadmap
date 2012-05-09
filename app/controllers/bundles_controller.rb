@@ -6,8 +6,8 @@ class BundlesController < ApplicationController
 
   def show
     @bundle = find_model(model_scope, params[:id])
-    @available_features = Feature.where(:current_state => [nil, 'unstarted', 'unscheduled'],  :project_id => @bundle.project_id, :bundle_ids => { :$ne => @bundle.id } ).order(:current_state.asc).all
-    @attached_features = Feature.find_all_by_bundle_ids(@bundle.id)
+    @available_features = @bundle.available_features
+    @attached_features = @bundle.attached_features
     respond_with @bundle
   end
 
