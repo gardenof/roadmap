@@ -4,7 +4,7 @@ module FeatureHelper
   end
 
   def tracker_status_class(feature)
-    feature.current_state.downcase
+    feature.current_state
   end
 
 end
