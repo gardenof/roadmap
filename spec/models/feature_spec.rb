@@ -14,14 +14,14 @@ describe Feature do
     it "finds on trailing boundary" do
       period_begin = Time.new(2012, 1, 1, 0, 0)
       period_end = Time.new(2012, 1, 31, 23, 59, 59)
-      
+
       found = Feature.accepted_in_period(period_begin, period_end)
       found.should include jan_feature
       found.should_not include feb_feature
     end
  end
 
-  describe "accepted_in_month" do 
+  describe "accepted_in_month" do
     let (:jan_feature_first) {Factory :feature, accepted_at: Time.new(2012,1,1) }
     let (:jan_feature_last ) {Factory :feature, accepted_at: Time.new(2012,1,31) }
     let (:feb_feature_first) {Factory :feature, accepted_at: Time.new(2012,2,1) }
@@ -32,7 +32,7 @@ describe Feature do
 
       features.should include jan_feature_first
       features.should include jan_feature_last
-      
+
       features.should_not include feb_feature_first
       features.should_not include feb_feature_last
     end
@@ -44,7 +44,7 @@ describe Feature do
       features.should include feb_feature_last
 
       features.should_not include jan_feature_first
-      features.should_not include jan_feature_last      
+      features.should_not include jan_feature_last
     end
 
  end
@@ -167,6 +167,18 @@ describe Feature do
       feature = Factory :feature, story_id: 10001, refreshed_at: Time.now, project_id: project.id
       TrackerIntegration.should_not_receive(:create_feature_in_tracker)
       feature.create_in_tracker
+    end
+  end
+  describe "ready_for_estimate" do
+    it "is true when has a ready_for_estimate_at Time" do
+      Factory.build(:feature, estimate: nil, ready_for_estimate_at: Time.now).should be_ready_for_estimate
+    end
+  end
+
+  describe "needs_discussion?" do
+    it "is true when the feature is not ready_for_estimate or ready_to_schedule" do
+      f = Factory.build(:feature, estimate: nil, ready_for_estimate_at: nil)
+      f.should be_needs_discussion
     end
   end
 end

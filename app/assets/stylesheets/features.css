@@ -43,3 +43,114 @@ th.longname {
 .billing-summary tr.total {
   font-weight: bold;
 }
+
+/*Borrowed from Tracker CSS*/
+.expanded-feature, .collapsed-feature {
+  overflow: auto;
+  padding: 4px;
+  min-height: 21px;
+  border-bottom: 1px solid #DDD;
+  border-top: 1px solid white;
+}
+
+.expanded-feature {
+  display: none;
+}
+
+.panel {
+  vertical-align: top;
+  border: none;
+  min-width: 240px;
+  width: 25%;
+  padding-bottom: 3px;
+}
+
+.panel .feature {
+  margin: 0 2px 0 2px;
+}
+
+.accepted {
+  background-color: #DAEBCF;
+  border-top: 1px solid #EEFCE2;
+  border-bottom: 1px solid #C3D5B4;
+}
+.started {
+  background-color: #F3F3D1;
+  border-top: 1px solid white;
+  border-bottom: 1px solid #DBDBB0;
+}
+.finished {
+  background-color: #F3F3D1;
+  border-top: 1px solid white;
+  border-bottom: 1px solid #DBDBB0;
+}
+.unstarted {
+  background-color: #F4F4F4;
+}
+.status-tags, .operations {
+  float: right;
+  text-align: center;
+  margin-left: 3px;
+  line-height: 1;
+}
+
+.panelTitle {
+  font-size: 11px;
+  position: relative;
+  top: 5px;
+  line-height: 17px;
+}
+
+.panel .feature .feature_name {
+  font-size: 12px;
+}
+
+.panelHeader, .panelHeaderLeft, .panelHeaderRight {
+  height: 26px;
+  background: #333;
+}
+.panelHeaderLeft, .panelHeaderRight {
+  width: 10px;
+  margin-right: -1px;
+  margin-left: -1px;
+}
+.panelHeaderRight {
+  float: right;
+  border-top-left-radius: inherit;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: inherit;
+  border-bottom-left-radius: inherit;
+  -moz-border-radius-topleft: inherit;
+  -moz-border-radius-topright: 6px;
+  -moz-border-radius-bottomright: inherit;
+  -moz-border-radius-bottomleft: inherit;
+  -webkit-border-top-left-radius: inherit;
+  -webkit-border-top-right-radius: 6px;
+  -webkit-border-bottom-right-radius: inherit;
+  -webkit-border-bottom-left-radius: inherit;
+  margin-right: 2px;
+}
+.panelHeaderLeft {
+  float: left;
+  border-top-left-radius: 6px;
+  border-top-right-radius: inherit;
+  border-bottom-right-radius: inherit;
+  border-bottom-left-radius: inherit;
+  -moz-border-radius-topleft: 6px;
+  -moz-border-radius-topright: inherit;
+  -moz-border-radius-bottomright: inherit;
+  -moz-border-radius-bottomleft: inherit;
+  -webkit-border-top-left-radius: 6px;
+  -webkit-border-top-right-radius: inherit;
+  -webkit-border-bottom-right-radius: inherit;
+  -webkit-border-bottom-left-radius: inherit;
+  margin-left: 2px;
+}
+.panelHeader {
+  color: white;
+  font-weight: bold;
+  overflow: hidden;
+  font-size: 12px;
+  padding: 0 0 0 4px;
+}
+

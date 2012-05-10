@@ -3,13 +3,55 @@
  * and any sub-directories. You're free to add application-wide styles to this file and they'll appear at
  * the top of the compiled file, but it's generally better to create a new file per style scope.
  *= require_self
- *= require_tree . 
+ *= require_tree .
 */
 body {
   font-size: 18px;
   line-height: 1.2em;
-  margin: 20px;
+  margin: 0;
 }
+
+#header {
+  padding: 0 14px 0 20px;
+  overflow: visible;
+  position: relative;
+  z-index: 12;
+  height: 45px;
+  background: #256841;
+  color: white;
+}
+
+#header h1 {
+  float: left;
+  width: 226px;
+  height: 25px;
+  margin-top: 11px;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+#header a {
+  color: white;
+}
+
+#controlPanel {
+  height: 69px;
+  border-top: 2px solid #BBB;
+  margin-bottom: 11px;
+  min-width: 930px;
+  background: url(/assets/control_panel.png) repeat-x left bottom;
+}
+
+#controlPanel #project_name_row {
+  padding: 5px 20px 0 19px;
+  overflow: hidden;
+}
+
+#header .project-link {
+  float: right;
+  margin: 10px 0 0 20px;
+}
+
 ul li {
   list-style: none;
 }
@@ -17,6 +59,9 @@ ul li {
   clear: both;
 }
 
+table.layout{
+  width: 100%;
+}
 div.bundle-header header {
   font-size: 1.5em;
   font-weight: bold;
@@ -62,25 +107,26 @@ div.bundle-details > div header {
   border-radius: 4px;
 }
 
- /*Just put the table to make it easier on my eyes*/
-table {
-  font-family: verdana,arial,sans-serif;
-  font-size:11px;
-  color:#333333;
-  border-width: 1px;
-  border-color: #999999;
-  border-collapse: collapse;
+#controlPanel #panelList {
+  padding: 0px 20px 0 19px;
+  margin-top: 3px;
 }
-table th {
-  background:#66bbff ;
-  border-width: 1px;
-  padding: 8px;
-  border-style: solid;
-  border-color: #999999;
+ul#buttonPanel ul#panelList {
+  float: left;
+  border-right: 1px solid #CCC;
+  padding-right: 5px;
 }
-table td {
-  border-width: 1px;
-  padding: 8px;
-  border-style: solid;
-  border-color: #999999;
+
+#controlPanel #controls ul#buttonPanel a.button {
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  display: block;
+  color: #999;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  height: 22px;
+  line-height: 23px;
+  padding: 0 6px;
 }

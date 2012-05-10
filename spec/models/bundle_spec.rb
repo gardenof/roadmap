@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe "Bundle" do
-  let(:bundle) { Factory :bundle }
+  let(:project) {Factory :project}
+  let(:bundle)  {Factory :bundle, project_id: project.id}
 
   describe"estimates_total" do
 
@@ -23,6 +24,39 @@ describe "Bundle" do
     end
   end
 
+  describe "available features" do
+    it "includes features attached to other bundles" do
+      other_feature = Factory :feature,
+        project_id: project.id, bundle_ids: ["hello"]
+      bundle.available_features.should include other_feature
+    end
+
+    it "includes features not attached to ANY bundle" do
+      orphaned_feature = Factory :feature,
+        project_id: project.id, bundle_ids: []
+      bundle.available_features.should include orphaned_feature
+    end
+
+    it "excludes features attached to this bundle" do
+      feature_in_the_bundle = Factory :feature,
+        project_id: project.id, bundle_ids: [bundle.id]
+      bundle.available_features.should_not include feature_in_the_bundle
+    end
+  end
+
+  describe "features" do
+    it "includes features that are attached to the bundle" do
+      bundled_feature = Factory :feature,
+        project_id: project.id, bundle_ids: [bundle.id]
+      bundle.features.should include bundled_feature
+    end
+
+    it "excludes features that are not attached" do
+      other_feature = Factory :feature, project_id: project.id
+      bundle.features.should_not include other_feature
+    end
+  end
+
   describe "unestimated_count" do
     let (:create_nil_features) {
       2.times do
@@ -40,6 +74,20 @@ describe "Bundle" do
       create_nil_features
 
       bundle.unestimated_count.should == 2
+    end
+  end
+
+  describe "features_ready_for_estimate" do
+    it "includes features ready_for_estimate" do
+      f = Factory :feature, bundle_ids: [bundle.id], ready_for_estimate_at: Time.now, estimate: nil
+      bundle.features_ready_for_estimate.should include f
+    end
+  end
+
+  describe "features_ready_to_schedule" do
+    it "includes features with estimates" do
+      f = Factory :feature, bundle_ids: [bundle.id], estimate: 3
+      bundle.features_ready_to_schedule.should include f
     end
   end
 end

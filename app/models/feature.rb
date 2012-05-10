@@ -13,10 +13,10 @@ class Feature
   key :labels,                Array
   key :name,                  String, required: true
   key :owned_by,              String
+  key :ready_for_estimate_at, Time
   key :refreshed_at,          Time
   key :story_id,              Integer # Pivotal Tracker's ID
   key :story_type,            String
-
 
   key :project_id,            ObjectId
   belongs_to :project
@@ -52,6 +52,22 @@ class Feature
 
   def updatable?
     !story_id?
+  end
+
+  def accepted?
+    current_state == "accepted"
+  end
+
+  def needs_discussion?
+    !ready_for_estimate? && !ready_to_schedule?
+  end
+
+  def ready_for_estimate?
+    !estimate.present? && ready_for_estimate_at.present?
+  end
+
+  def ready_to_schedule?
+    estimate.present? || !updatable?
   end
 
   def cost

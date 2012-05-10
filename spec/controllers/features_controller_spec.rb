@@ -15,7 +15,7 @@ describe FeaturesController do
   end
   let (:project) {Factory :project}
   describe "GET tagged" do
-   
+
 
     it "returns 200 OK" do
       # /features/tagged/red
@@ -44,10 +44,15 @@ describe FeaturesController do
     let (:not_updatable_feature) {Factory :feature, story_id: 1123, project_id: project.id}
     it "changes value" do
       updatable_feature
-      put :update, project_id: project.to_param, 
-        id: updatable_feature.id, 
+      put :update, project_id: project.to_param,
+        id: updatable_feature.id,
         feature: {:name => "after update"}
       updatable_feature.reload.name.should == "after update"
+    end
+
+    it "redirects to named_route when passed in params" do
+      bundle = Factory :bundle
+      put :update, project_id: project.to_param, id: updatable_feature.id, redirect_to_bundle_id: bundle.to_param
     end
 
     it "redirecting correctly when updatable" do
@@ -70,17 +75,17 @@ describe FeaturesController do
   end
 
   describe "schedule" do
-    it "creates the feature in tracker" do 
+    it "creates the feature in tracker" do
       new_story = Factory.build :tracker_story
       TrackerIntegration.stub(:create_feature_in_tracker).and_return(new_story)
-           
-      feature_to_schedule = 
+
+      feature_to_schedule =
         Factory :feature, story_id: nil, project_id: project.id
-      
+
       # PUT /features/run_schedule [params]
       post :schedule, project_id: project.id,
         :feature_id => feature_to_schedule.id
-      
+
       assigns(:feature).story_id.should_not be_nil
     end
   end

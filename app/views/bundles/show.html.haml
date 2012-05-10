@@ -1,38 +1,34 @@
+#controlPanel.controlPanel
+  #project_name_row
+    %p
+      Bundle: #{@bundle.name}
+      = link_to 'Edit', edit_project_bundle_path(@project,@bundle)
+
 %div#notice= notice
 
-%div.bundle-header
-  %header
-    #{@bundle.name}
-    %span.desc
-      #{@bundle.class}
-    .action-links
-      = link_to 'Edit', edit_project_bundle_path(@project,@bundle)
-      \|
-      = link_to 'Back', project_bundles_path(@project)
+= form_tag schedule_project_bundle_path(@project, @bundle) do |f|
+  = submit_tag 'Send Bundle to Tracker', confirm: "This action will create in Tracker any features in the bundle (even undiscussed!) that have not yet been created in Tracker. Features previously sent to Tracker will not be modified."
 
+%table.layout
+  %tr
+    = render partial: 'shared/panel',
+      locals: { title: "BUNDLED",
+      features: @bundled_features,
+      feature_status_tags: 'features/bundled_status_tags'},
+      feature_form: 'features/bundled_form'
 
-%div.bundle-details
-  - if @attached_features.any?
-    .features-attached
-      %header #{@bundle.name.capitalize}
-      %header #{@bundle.estimates_total} points, #{@bundle.unestimated_count} unestimated
-      = form_tag schedule_project_bundle_path(@project, @bundle) do |f|
-        = submit_tag 'Send Bundle to Tracker', confirm: "This action will create in Tracker any features that have not yet been created in Tracker. Features preivoisly sent to Tracker will not be modified."
+    = render partial: 'shared/panel',
+      locals: { title: "UNESTIMATED",
+      features: @estimable_features,
+      feature_status_tags: 'features/unestimated_status_tags'}
 
-      %ul
-        - @attached_features.each do |feature|
-          %li.clear
-            = link_to feature.name, [@project, feature]
-            = form_tag remove_feature_project_bundle_path(@project,@bundle) do |f|
-              = hidden_field_tag :feature_id, feature.id
-              = submit_tag '-'
-  - if @available_features.any?
-    .features-available
-      %header Available Features
-      %ul
-        - @available_features.each do |feature|
-          %li.clear
-            = link_to feature.name, [@project, feature]
-            = form_tag add_feature_project_bundle_path(@project,@bundle) do |f|
-              = hidden_field_tag :feature_id, feature.id
-              = submit_tag '+'
+    = render partial: 'shared/panel',
+      locals: { title: "NEEDS DISCUSSION",
+      features: @features_needing_discussion,
+      feature_status_tags: 'features/needs_discussion_status_tags'}
+
+    = render partial: 'shared/panel',
+      locals: { title: "AVAILABLE",
+      features: @available_features,
+      feature_operations: 'bundles/add_feature_button',
+      feature_status_tags: 'features/available_status_tags'}

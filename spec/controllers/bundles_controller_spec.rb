@@ -26,42 +26,24 @@ describe BundlesController do
       }
     }
 
-    describe "@available_features" do
-      it "includes features attached to other bundles" do
-        other_feature = Factory :feature,
-          project_id: project.id, bundle_ids: ["hello"]
-        get :show, show_params
-        assigns(:available_features).should include other_feature
-      end
-
-      it "includes features not attached to ANY bundle" do
-        orphaned_feature = Factory :feature,
-          project_id: project.id, bundle_ids: []
-        get :show, show_params
-        assigns(:available_features).should include orphaned_feature
-      end
-
-      it "excludes features attached to this bundle" do
-        feature_in_the_bundle = Factory :feature,
-          project_id: project.id, bundle_ids: [bundle.id]
-        get :show, show_params
-        assigns(:available_features).should_not include feature_in_the_bundle
-      end
+    it "sets available_features" do
+      get :show, show_params
+      assigns(:available_features).should == bundle.available_features
     end
 
-    describe "@attached_features" do
-      it " includes features that are attached to the bundle" do
-        bundled_feature = Factory :feature,
-          project_id: project.id, bundle_ids: [bundle.id]
-        get :show, show_params
-        assigns(:attached_features).should include bundled_feature
-      end
+    it "sets bundled_features" do
+      get :show, show_params
+      assigns(:bundled_features).should == bundle.features_ready_to_schedule
+    end
 
-      it "excludes features that are not attached" do
-        other_feature = Factory :feature, project_id: project.id
-        get :show, show_params
-        assigns(:attached_features).should_not include other_feature
-      end
+    it "sets features_needing_discussion" do
+      get :show, show_params
+      assigns(:features_needing_discussion).should == bundle.features_needing_discussion
+    end
+
+    it "sets estimable_features" do
+      get :show, show_params
+      assigns(:estimable_features).should == bundle.features_ready_for_estimate
     end
   end
 
@@ -113,36 +95,36 @@ describe BundlesController do
       post :schedule, schedule_params
     end
 
-    it "returns successful message after successfully scheduling features" do 
+    it "returns successful message after successfully scheduling features" do
       feature = bundled_feature
       TrackerIntegration.stub(:create_feature_in_tracker).and_return(new_story)
 
-      post :schedule, schedule_params   
-      
+      post :schedule, schedule_params
+
       flash[:notice].should == 'All features have successfully been loaded onto Pivotal Tracker'
     end
 
-    it " returns failed message after failed attempt to schedule features" do 
+    it " returns failed message after failed attempt to schedule features" do
       feature = bundled_feature
       TrackerIntegration.stub(:create_feature_in_tracker).and_raise('poop')
-      post :schedule, schedule_params  
+      post :schedule, schedule_params
 
       flash[:error].should include "Caught exception from Tracker on feature #{feature.name}"
     end
 
-    it "has no features in its bundle" do 
+    it "has no features in its bundle" do
       TrackerIntegration.should_not_receive(:create_feature_in_tracker)
       post :schedule, schedule_params
       flash[:error].should include "Please add features to the bundle before scheduling."
     end
 
-    it "returns appropriate message if pivotal tracker refuses our create" do 
+    it "returns appropriate message if pivotal tracker refuses our create" do
       msgs = ['Name cannot be blank', 'Eat turds and perish']
       feature = bundled_feature
 
       Feature.any_instance.stub(:create_in_tracker)
       Feature.any_instance.stub(:tracker_errors).and_return(msgs)
-      
+
       post :schedule, schedule_params
 
       flash[:error].should == msgs.join(',')

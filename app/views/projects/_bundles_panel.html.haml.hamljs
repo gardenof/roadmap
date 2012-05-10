@@ -1,0 +1,13 @@
+%td.panel
+  .panelHeaderRight
+  .panelHeaderLeft
+  .panelHeader
+    %span.panelTitle BUNDLES (#{@project.bundles.count})
+
+  - @project.bundles.each do |b|
+    .collapsed-feature
+      %span.feature_name
+      = link_to b.name, project_bundle_path(@project, b)
+      .operations
+      .status-tags
+        = b.estimates_total pts

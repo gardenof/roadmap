@@ -25,7 +25,11 @@ class FeaturesController < ApplicationController
     @feature = Feature.find(params[:id])
     if @feature.updatable?
       @feature.update_attributes(params[:feature])
-      redirect_to project_feature_path(@project, @feature)
+      if (bundle_id = params[:redirect_to_bundle_id])
+        redirect_to project_bundle_path(@project, bundle_id)
+      else
+        redirect_to project_feature_path(@project, @feature)
+      end
     else
       flash[:notice] = "Can't update feature attributes after Tracker refresh"
       redirect_to project_feature_path(@project, @feature)
