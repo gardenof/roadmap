@@ -197,6 +197,7 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    will_paginate (3.0.3)
     zbatery (4.1.2)
       rainbows (~> 4.3)
 
@@ -226,4 +227,5 @@ DEPENDENCIES
   therubyracer
   turn (= 0.8.2)
   uglifier
+  will_paginate (~> 3.0.3)
   zbatery

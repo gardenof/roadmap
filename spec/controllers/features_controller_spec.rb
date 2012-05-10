@@ -107,4 +107,20 @@ describe FeaturesController do
       feature.reload.description.should == "this is"
     end
   end
+
+  describe "pagination" do
+    let(:feature) { Factory :feature }
+    let(:project) { Factory :project }
+    before(:all) { 30.times { Factory.create :feature, labels: ["red"], project_id: project.id } }
+    after(:all) { Feature.delete_all }
+
+    it "works and shows at most 10 rows per page" do
+      
+      get :index, page: 1, project_id: project.id
+
+      Feature.should respond_to :paginate
+
+      assigns(:features).count.should eq(10)
+    end
+  end
 end

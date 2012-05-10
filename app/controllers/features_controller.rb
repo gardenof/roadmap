@@ -4,6 +4,13 @@ class FeaturesController < ApplicationController
   model_scope [:project]
   model_class Feature
 
+  PER_PAGE = 10
+
+  def index
+    @features = Feature.paginate(page: params[:page],  
+                                per_page: PER_PAGE)
+  end
+
   def edit
     @feature = Feature.find(params[:id])
     if @feature.updatable?
@@ -38,7 +45,7 @@ class FeaturesController < ApplicationController
   end
 
   def tagged
-    @features = Feature.with_label(params[:value]).all
+    @features = Feature.with_label(params[:value]).paginate(page: params[:page], per_page: PER_PAGE)
     render 'index' , project_id: @project.id
   end
 

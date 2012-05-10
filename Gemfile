@@ -24,6 +24,8 @@ gem "pivotal-tracker", "~> 0.5.1"
 
 gem 'flipstone-charts', git: "git://github.com/flipstone/flipstone-charts", branch: "6ea3409"
 
+gem "will_paginate", "~> 3.0.3"
+
 group :assets do
   gem 'therubyracer'
   gem 'sass-rails'

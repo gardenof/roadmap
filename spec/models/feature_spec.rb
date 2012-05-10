@@ -168,8 +168,5 @@ describe Feature do
       TrackerIntegration.should_not_receive(:create_feature_in_tracker)
       feature.create_in_tracker
     end
-
   end
-
-
 end
