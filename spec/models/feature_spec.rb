@@ -173,7 +173,7 @@ describe Feature do
 
   describe "ready_for_estimate" do
     it "is true when has a ready_for_estimate_at Time" do
-      Factory.build(:feature, ready_for_estimate_at: Time.now).should be_ready_for_estimate
+      Factory.build(:feature, estimate: nil, ready_for_estimate_at: Time.now).should be_ready_for_estimate
     end
   end
 

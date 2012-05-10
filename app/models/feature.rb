@@ -63,7 +63,7 @@ class Feature
   end
 
   def ready_for_estimate?
-    ready_for_estimate_at.present?
+    !estimate.present? && ready_for_estimate_at.present?
   end
 
   def ready_to_schedule?

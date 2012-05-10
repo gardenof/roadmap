@@ -1,21 +1,23 @@
+#controlPanel.controlPanel
+  #project_name_row
+    .operations
+      = link_to 'Edit', edit_project_path(@project)
+      \|
+      = link_to "Refresh", project_refresh_path(@project)
+    %p
+      Project: #{@project.name}
+
 %p#notice= notice
 
-%h2 Project: #{@project.name}
 
-.features
-  - set = FeatureSet.new(@project.features)
-  %ul
-    %li Features in project: #{set.count} #{link_to 'Features', project_features_path(@project)}
-    %li Unestimated features: #{set.unestimated_count}
-    - cost = FeatureSet.new(@project.features.accepted_in_month(Time.now)).total_cost
-    %li Points this month: #{cost} #{link_to "Billing Report", project_billing_path(@project)}
-
-.actions
-  = link_to 'New Bundle', new_project_bundle_path(:project_id => @project.id)
-  \|
-  = link_to 'Edit', edit_project_path(@project)
-  \|
-  = link_to "Refresh", project_refresh_path(@project)
-  \|
-  = link_to 'Projects', projects_path
-
+%table.layout
+  %tr
+    = render partial: 'bundles_panel'
+    %td
+      .features
+        - set = FeatureSet.new(@project.features)
+        %ul
+          %li Features in project: #{set.count} #{link_to 'Features', project_features_path(@project)}
+          %li Unestimated features: #{set.unestimated_count}
+          - cost = FeatureSet.new(@project.features.accepted_in_month(Time.now)).total_cost
+          %li Points this month: #{cost} #{link_to "Billing Report", project_billing_path(@project)}

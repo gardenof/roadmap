@@ -45,19 +45,28 @@ th.longname {
 }
 
 /*Borrowed from Tracker CSS*/
-.collapsed-feature {
+.expanded-feature, .collapsed-feature {
   overflow: auto;
-  padding: 4px 4px 4px 8px;
+  padding: 4px;
   min-height: 21px;
   border-bottom: 1px solid #DDD;
   border-top: 1px solid white;
+}
+
+.expanded-feature {
+  display: none;
 }
 
 .panel {
   vertical-align: top;
   border: none;
   min-width: 240px;
+  width: 25%;
   padding-bottom: 3px;
+}
+
+.panel .feature {
+  margin: 0 2px 0 2px;
 }
 
 .accepted {
@@ -84,11 +93,16 @@ th.longname {
   margin-left: 3px;
   line-height: 1;
 }
+
 .panelTitle {
   font-size: 11px;
   position: relative;
   top: 5px;
   line-height: 17px;
+}
+
+.panel .feature .feature_name {
+  font-size: 12px;
 }
 
 .panelHeader, .panelHeaderLeft, .panelHeaderRight {
@@ -139,3 +153,4 @@ th.longname {
   font-size: 12px;
   padding: 0 0 0 4px;
 }
+

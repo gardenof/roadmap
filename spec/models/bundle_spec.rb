@@ -79,7 +79,7 @@ describe "Bundle" do
 
   describe "features_ready_for_estimate" do
     it "includes features ready_for_estimate" do
-      f = Factory :feature, bundle_ids: [bundle.id], ready_for_estimate_at: Time.now
+      f = Factory :feature, bundle_ids: [bundle.id], ready_for_estimate_at: Time.now, estimate: nil
       bundle.features_ready_for_estimate.should include f
     end
   end

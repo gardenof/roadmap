@@ -1,0 +1,18 @@
+.feature a.stateChangeButton {
+  display: inline-block;
+  width: 49px;
+  height: 22px;
+  line-height: 23px;
+  text-align: center;
+  color: #EEE;
+  font-size: 11px;
+  font-weight: bold;
+  text-shadow: none;
+  margin-left: 1px;
+  vertical-align: bottom;
+}
+
+.feature .add {
+  background-image: url(/assets/gray_btn.png);
+  color: #222;
+}
