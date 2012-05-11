@@ -16,6 +16,7 @@
   %tr
     = render partial: 'shared/panel',
       locals: { title: "BUNDLED",
+      total_estimates: "(#{@bundle.estimates_total}pts)",
       features: @bundled_features,
       panel_class_name: 'bundled',
       feature_status_tags: 'features/bundled_status_tags'},

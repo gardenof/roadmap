@@ -4,12 +4,13 @@
 - feature_operations ||= nil
 - feature_status_tags ||= nil
 - panel_class_name ||= ""
+- total_estimates ||= ""
 
 %td.panel{class:panel_class_name }
   .panelHeaderRight
   .panelHeaderLeft
   .panelHeader
-    %span.panelTitle #{title} (#{features.count})
+    %span.panelTitle #{title} (#{features.count}) #{total_estimates}
 
   - features.each do |feature|
     .feature
