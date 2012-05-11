@@ -17,15 +17,18 @@
     = render partial: 'shared/panel',
       locals: { title: "BUNDLED",
       features: @bundled_features,
+      panel_class_name: 'bundled',
       feature_status_tags: 'features/bundled_status_tags'},
       feature_form: 'features/bundled_form'
 
     = render partial: 'shared/panel',
       locals: { title: "UNESTIMATED",
+      panel_class_name: 'unestimated',
       features: @estimable_features,
       feature_status_tags: 'features/unestimated_status_tags'}
 
     = render partial: 'shared/panel',
       locals: { title: "NEEDS DISCUSSION",
+      panel_class_name: 'need-discussion',
       features: @features_needing_discussion,
       feature_status_tags: 'features/needs_discussion_status_tags'}
