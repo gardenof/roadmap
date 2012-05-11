@@ -7,8 +7,7 @@ class FeaturesController < ApplicationController
   PER_PAGE = 10
 
   def index
-    @features = Feature.paginate(page: params[:page],  
-                                per_page: PER_PAGE)
+    @features = @project.features.paginate(page: params[:page], per_page: PER_PAGE)
   end
 
   def edit
@@ -49,7 +48,7 @@ class FeaturesController < ApplicationController
   end
 
   def tagged
-    @features = Feature.with_label(params[:value]).paginate(page: params[:page], per_page: PER_PAGE)
+    @features = @project.features.with_label(params[:value]).paginate(page: params[:page], per_page: PER_PAGE)
     render 'index' , project_id: @project.id
   end
 

@@ -114,18 +114,24 @@ describe FeaturesController do
   end
 
   describe "pagination" do
-    let(:feature) { Factory :feature }
-    let(:project) { Factory :project }
-    before(:all) { 30.times { Factory.create :feature, labels: ["red"], project_id: project.id } }
-    after(:all) { Feature.delete_all }
 
     it "works and shows at most 10 rows per page" do
-      
+      30.times { Factory.create :feature, labels: ["red"], project_id: project.id }
+
       get :index, page: 1, project_id: project.id
 
       Feature.should respond_to :paginate
 
       assigns(:features).count.should eq(10)
+    end
+    it "should only show features for a single project" do
+      feature1 = Factory :feature, project_id: project.id
+      feature2 = Factory :feature, project_id: nil
+
+      get :index, page: 1, project_id: project.id
+
+      assigns(:features).should include feature1
+      assigns(:features).should_not include feature2
     end
   end
 end
