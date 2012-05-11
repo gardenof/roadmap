@@ -26,10 +26,12 @@ gem 'flipstone-charts', git: "git://github.com/flipstone/flipstone-charts", bran
 
 gem "will_paginate", "~> 3.0.3"
 
+
 group :assets do
   gem 'therubyracer'
   gem 'sass-rails'
   gem 'uglifier'
+  gem "coffee-rails", "~> 3.1.1"
 end
 
 group :test, :development, :cruise do

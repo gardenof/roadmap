@@ -3,7 +3,10 @@
     %p
       Bundle: #{@bundle.name}
       = link_to 'Edit', edit_project_bundle_path(@project,@bundle)
-
+      %br
+      = link_to 'Bundled', '#', class: 'bundled_toggle'
+      = link_to 'Unestimated', '#', class: 'underestimated_toggle'
+      = link_to 'Needs Discussion', '#', class: 'needs_discussion_toggle'
 %div#notice= notice
 
 = form_tag schedule_project_bundle_path(@project, @bundle) do |f|
