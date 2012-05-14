@@ -1,2 +1,4 @@
 = simple_format feature.description
-= link_to 'Destroy', project_feature_path(feature.project,feature), :confirm => 'Are you sure?', :method => :delete
+.floatButton
+  = link_to 'Destroy', project_feature_path(feature.project,feature), :confirm => 'Are you sure?', :method => :delete
+  = render partial: 'bundles/remove_feature_button', locals: {feature: feature}

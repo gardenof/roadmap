@@ -16,3 +16,8 @@
   background-image: url(/assets/gray_btn.png);
   color: #222;
 }
+
+.floatButton a, .floatButton form {
+  float: left;
+  margin: 0 5px;
+}
