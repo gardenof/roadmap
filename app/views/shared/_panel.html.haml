@@ -16,6 +16,8 @@
     .feature
       .collapsed-feature{class: tracker_status_class(feature)}
         %img.feature-toggle{src: '/assets/collapsed.png'}
+        .custom_panel
+          = find_total_estimate(feature)
         %span.feature_name= link_to feature.name, [@project, feature]
         .operations
           - if feature_operations
@@ -25,6 +27,8 @@
             = render partial: feature_status_tags, locals: {feature: feature}
       .expanded-feature{class: tracker_status_class(feature)}
         %img.feature-toggle{src: '/assets/expanded.png'}
+        .custom_panel
+          = find_total_estimate(feature)
         %span.feature_name= link_to feature.name, [@project, feature]
         .operations
           - if feature_operations

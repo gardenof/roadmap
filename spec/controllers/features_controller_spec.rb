@@ -134,4 +134,5 @@ describe FeaturesController do
       assigns(:features).should_not include feature2
     end
   end
+
 end

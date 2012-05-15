@@ -9,6 +9,7 @@ Roadmap::Application.routes.draw do
     get 'refresh', controller: 'projects/refresh', action: :refresh
     post 'schedule', controller: 'features', action: :schedule
 
+
     resources :features do
       get 'tagged/:value',
         :constraints => { :value =>  /[^\/]+/ },
@@ -30,6 +31,10 @@ Roadmap::Application.routes.draw do
         on: :member,
         action: :schedule,
         as: 'schedule'
+      put 'describe_feature',
+        on: :member,
+        action: :describe_feature,
+        as: 'describe_feature'
     end
   end
 end

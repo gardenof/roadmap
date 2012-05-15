@@ -131,4 +131,68 @@ describe BundlesController do
     end
 
   end
+
+  describe "expanded_description" do
+    let (:project) { Factory :project}
+    let (:bundle) { Factory :bundle, project_id: project.id }
+
+    def bundled_feature
+      Factory :feature, {
+        story_id: nil,
+        bundle_ids: [bundle.id],
+        project_id: bundle.project.id
+      }
+    end
+
+    let (:schedule_params) {
+      {
+        project_id: bundle.project.to_param,
+        id: bundle.to_param,
+        feature: { id: bundled_feature.id, description: bundled_feature.description }
+      }
+    }
+
+
+
+    it "works like a champ" do
+      feature = bundled_feature
+      put :describe_feature, schedule_params
+      response.should be_redirect
+    end
+
+    it "updates the description only if it's updatable" do
+      feature = bundled_feature
+
+      put :describe_feature, {
+        project_id: bundle.project.to_param,
+        id: bundle.to_param,
+        feature: { id: feature.id, description: 'Wtf' }
+      }
+
+      feature.reload
+      feature.description.should == "Wtf"
+    end
+
+
+    it "does not update the description  if it's not updatable and shows appropriate meesage" do
+
+      feature = Factory :feature, story_id: 124345
+
+      put :describe_feature, {
+        project_id: bundle.project.to_param,
+        id: bundle.to_param,
+        feature: { id: feature.id, description: 'Wtf' }
+      }
+
+      feature.reload
+      feature.description.should_not == "Wtf"
+      flash[:notice].should eq("Can't update feature attributes after feature is in Tracker ")
+    end
+
+    it "should redirect back to the bundle page" do
+      feature = bundled_feature
+      put :describe_feature, schedule_params
+      response.should redirect_to project_bundle_path
+    end
+  end
 end

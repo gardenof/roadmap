@@ -2,3 +2,10 @@
   Place all the styles related to the matching controller here.
   They will automatically be included in application.css.
 */
+
+ /*adjusts margin for feature rows in bundle page*/
+
+.custom_panel {
+  display: inline-block;
+  width: 25px;
+}
