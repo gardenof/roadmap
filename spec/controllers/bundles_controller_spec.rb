@@ -132,67 +132,73 @@ describe BundlesController do
 
   end
 
-  describe "expanded_description" do
+  describe "update_bundle_feature" do
     let (:project) { Factory :project}
-    let (:bundle) { Factory :bundle, project_id: project.id }
+    let (:bundle)  { Factory :bundle, project_id: project.id }
+    let (:updatable_bundle_feature) {Factory :feature, story_id: nil, bundle_ids: [bundle.id], project_id: bundle.project.id}
 
-    def bundled_feature
-      Factory :feature, {
-        story_id: nil,
-        bundle_ids: [bundle.id],
-        project_id: bundle.project.id
-      }
-    end
-
-    let (:schedule_params) {
-      {
-        project_id: bundle.project.to_param,
-        id: bundle.to_param,
-        feature: { id: bundled_feature.id, description: bundled_feature.description }
-      }
-    }
-
-
-
-    it "works like a champ" do
-      feature = bundled_feature
-      put :describe_feature, schedule_params
-      response.should be_redirect
+    it "should redirect back to the bundle page" do
+      put :update_bundle_feature, { project_id: bundle.project.to_param, id: bundle.to_param,
+                              feature: { id: updatable_bundle_feature.id, description: updatable_bundle_feature.description }}
+      response.should redirect_to project_bundle_path
     end
 
     it "updates the description only if it's updatable" do
-      feature = bundled_feature
-
-      put :describe_feature, {
+      updatable_bundle_feature.should be_updatable
+      put :update_bundle_feature, {
         project_id: bundle.project.to_param,
         id: bundle.to_param,
-        feature: { id: feature.id, description: 'Wtf' }
+        feature: { id: updatable_bundle_feature.id, description: 'Wtf' }
       }
 
-      feature.reload
-      feature.description.should == "Wtf"
+      updatable_bundle_feature.reload
+      updatable_bundle_feature.description.should == "Wtf"
     end
-
 
     it "does not update the description  if it's not updatable and shows appropriate meesage" do
-
-      feature = Factory :feature, story_id: 124345
-
-      put :describe_feature, {
+      non_updatable_bundle_feature = Factory :feature, story_id: 124345
+      non_updatable_bundle_feature.should_not be_updatable
+      put :update_bundle_feature, {
         project_id: bundle.project.to_param,
         id: bundle.to_param,
-        feature: { id: feature.id, description: 'Wtf' }
+        feature: { id: non_updatable_bundle_feature.id, description: 'Wtf' }
       }
 
-      feature.reload
-      feature.description.should_not == "Wtf"
+      non_updatable_bundle_feature.reload
+      non_updatable_bundle_feature.description.should_not == "Wtf"
       flash[:notice].should eq("Can't update feature attributes after feature is in Tracker ")
     end
+  end
 
-    it "should redirect back to the bundle page" do
-      feature = bundled_feature
-      put :describe_feature, schedule_params
-      response.should redirect_to project_bundle_path
+  describe "create_bundle_feature" do
+    it "creates a feature in a bundle and sets project_id, bundle_ids correctly" do
+      project = Factory :project
+      bundle = Factory :bundle, project_id: project.id
+
+      post :create_bundle_feature, {
+        project_id: project.to_param,
+        id: bundle.to_param,
+        feature: {name: 'hoho'}
+      }
+
+      feature_created=Feature.find_by_name('hoho')
+      feature_created.should_not be_nil
+      feature_created.project_id.class.should == BSON::ObjectId
+      feature_created.bundle_ids[0].class.should == BSON::ObjectId
+    end
+
+    it "doesnt create a feature for another bundle" do
+      project = Factory :project
+      hack_project = Factory :project
+      bundle = Factory :bundle, project_id: project.id
+
+      post :create_bundle_feature, {
+        project_id: hack_project.to_param,
+        id: bundle.to_param,
+        feature: {name: 'hoho', description: 'idurfg'}
+      }
+
+      Feature.find_by_name('hoho').should be_nil
     end
   end
 end

@@ -5,12 +5,19 @@
 - feature_status_tags ||= nil
 - panel_class_name ||= ""
 - total_estimates ||= ""
+- dropdown ||= 'features/new_feature_dropdown'
 
 %td.panel{class:panel_class_name }
   .panelHeaderRight
   .panelHeaderLeft
   .panelHeader
     %span.panelTitle #{title} (#{features.count}) #{total_estimates}
+    - if panel_class_name == "need-discussion"
+      %img.new_bundle_feature{src: '/assets/collapsed.png'}
+  - if panel_class_name == "need-discussion"
+    .show_me
+
+      = render partial: dropdown
 
   - features.each do |feature|
     .feature

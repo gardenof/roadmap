@@ -6,6 +6,7 @@ class FeaturesController < ApplicationController
 
   PER_PAGE = 10
 
+
   def index
     @features = @project.features.paginate(page: params[:page], per_page: PER_PAGE)
   end

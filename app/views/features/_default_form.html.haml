@@ -1,4 +1,4 @@
-= form_for feature, url: describe_feature_project_bundle_url  do |f|
+= form_for feature, url: update_bundle_feature_project_bundle_url  do |f|
   -if feature.errors.any?
     #error_explanation
       %h2= "#{pluralize(@feature.errors.count, "error")} prohibited this feature from being saved:"
@@ -13,5 +13,4 @@
     = f.submit 'Save Changes'
 .floatButton
   = render partial: 'bundles/remove_feature_button', locals: {feature: feature}
-  = button_to 'Delete Feature', project_feature_path(feature.project,feature), :confirm => 'Are you sure?', :method => :delete
-
+  = button_to 'Delete Feature', project_feature_path(@project,feature.to_param), :confirm => 'Are you sure?', :method => :delete

@@ -1,0 +1,12 @@
+= form_tag(create_bundle_feature_project_bundle_path(@project,@bundle), method: :post) do
+  .field
+    = label_tag "Name"
+    = text_field_tag 'feature[name]', nil
+  .field
+    = label_tag "estimate"
+    = text_field_tag 'feature[estimate]', nil, size: 3
+  .field
+    = label_tag "description"
+    = text_area_tag 'feature[description]', nil, :size => "45x10"
+  .field
+    = submit_tag 'Save'

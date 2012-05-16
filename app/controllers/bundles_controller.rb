@@ -4,7 +4,26 @@ class BundlesController < ApplicationController
   model_scope [:project]
   model_class Bundle
 
-  def describe_feature
+  def create_bundle_feature
+    feature_params = params[:feature]
+    bundle = Bundle.find(params[:id])
+
+    if bundle.project_id != @project.id
+      flash[:notice] = "You cannot save feature to another bundle"
+    else
+      feature_params[:bundle_ids] = [bundle.id]
+      @feature = Feature.new(feature_params)
+      @feature.project_id = @project.id
+      if @feature.save
+        flash[:notice] = "Feature was created"
+      else
+        flash[:notice] = "Can't create a feature without a name"
+      end
+    end
+    redirect_to project_bundle_path(@project, bundle)
+  end
+
+  def update_bundle_feature
     feature_params = params[:feature]
     @feature = Feature.find(feature_params[:id])
     if @feature.updatable?

@@ -31,10 +31,14 @@ Roadmap::Application.routes.draw do
         on: :member,
         action: :schedule,
         as: 'schedule'
-      put 'describe_feature',
+      put 'update_bundle_feature',
         on: :member,
-        action: :describe_feature,
-        as: 'describe_feature'
+        action: :update_bundle_feature,
+        as: 'update_bundle_feature'
+      post 'create_bundle_feature',
+        on: :member,
+        action: :create_bundle_feature,
+        as: 'create_bundle_feature'
     end
   end
 end
