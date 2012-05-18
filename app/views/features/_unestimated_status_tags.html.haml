@@ -1,4 +1,5 @@
 = form_tag(project_feature_path(@project,feature), method: :put) do
   = text_field_tag 'feature[estimate]', nil, size: 3
   = hidden_field_tag 'feature[ready_for_estimate_at]', Time.now
+  = hidden_field_tag 'redirect_to_bundle_id', @bundle.to_param
   = submit_tag 'Save'

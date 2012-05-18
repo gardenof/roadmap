@@ -8,10 +8,10 @@ jQuery ->
     $feature = $(this).parent().find '.feature_name'
     $discription = $feature.attr "data-description"
 
-    $popup_discription = $('<div id="feature_description"></div>')
+    $popup_discription = $('<div id="popup_discription"></div>')
     $popup_discription.appendTo $(this).parent()
 
     $popup_discription.html $discription
   ), ->
-    $('div#feature_description').remove()
+    $('div#popup_discription').remove()
 
