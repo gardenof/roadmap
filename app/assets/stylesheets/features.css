@@ -53,6 +53,10 @@ th.longname {
   border-top: 1px solid white;
 }
 
+.feature {
+  position: relative;
+}
+
 .expanded-feature {
   display: none;
 }

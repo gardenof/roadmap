@@ -10,7 +10,7 @@ module FeatureHelper
     if feature.estimate == nil
       ""
     else
-      "(#{feature.estimate})"
+      "#{feature.estimate}"
     end
   end
 end
