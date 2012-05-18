@@ -152,5 +152,6 @@ th.longname {
   overflow: hidden;
   font-size: 12px;
   padding: 0 0 0 4px;
+  position: relative;
 }
 

@@ -9,3 +9,23 @@
   display: inline-block;
   width: 25px;
 }
+
+.new_form_dropdown {
+  background-color: #256841;
+  color: white;
+  display: none;
+}
+
+.new_form_dropdown textarea {
+  resize: none;
+}
+
+.new_form_dropdown label {
+  float: left;
+}
+
+.new_feature_toggle {
+  position: absolute;
+  top: 8px;
+  right: 0;
+}

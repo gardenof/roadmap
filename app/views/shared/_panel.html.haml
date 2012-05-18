@@ -13,9 +13,9 @@
   .panelHeader
     %span.panelTitle #{title} (#{features.count}) #{total_estimates}
     - if panel_class_name == "need-discussion"
-      %img.new_bundle_feature{src: '/assets/collapsed.png'}
+      %img.new_feature_toggle{src: '/assets/plus_btn.png'}
   - if panel_class_name == "need-discussion"
-    .show_me
+    .new_form_dropdown
 
       = render partial: dropdown
 

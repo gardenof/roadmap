@@ -8,6 +8,10 @@ class Bundle
 
   belongs_to :project
 
+  def self.labels_formate(labels)
+    labels.try(:gsub, /\s/, '').try(:split, ",")
+  end
+
   def available_features
     Feature.where(:current_state => [nil, 'unstarted', 'unscheduled'], :project_id => project_id, :bundle_ids => { :$ne => id } ).order(:current_state.asc).all
   end

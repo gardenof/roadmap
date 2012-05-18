@@ -5,22 +5,14 @@ class BundlesController < ApplicationController
   model_class Bundle
 
   def create_bundle_feature
-    feature_params = params[:feature]
-    bundle = Bundle.find(params[:id])
-
-    if bundle.project_id != @project.id
-      flash[:notice] = "You cannot save feature to another bundle"
-    else
-      feature_params[:bundle_ids] = [bundle.id]
-      @feature = Feature.new(feature_params)
-      @feature.project_id = @project.id
+    new_feature_params = get_bundled_feature_params_and_id_check(params)
+      @feature = Feature.new(new_feature_params)
       if @feature.save
         flash[:notice] = "Feature was created"
       else
-        flash[:notice] = "Can't create a feature without a name"
+        flash[:alert] = @feature.errors.full_messages
       end
-    end
-    redirect_to project_bundle_path(@project, bundle)
+    redirect_to project_bundle_path
   end
 
   def update_bundle_feature
@@ -89,4 +81,23 @@ class BundlesController < ApplicationController
     redirect_to project_bundle_path
   end
 
+  protected
+
+  def get_bundled_feature_params_and_id_check(params)
+    feature_params = params[:feature]
+
+    begin
+      bundle = @project.bundles.find(params[:id])
+      if bundle != nil
+        labels = Bundle.labels_formate(feature_params[:labels])
+        new_hash = { project_id: @project.id,
+                     bundle_ids: [bundle.id],
+                     labels: labels
+                   }
+        feature_params.merge(new_hash)
+      end
+    rescue Exception => e
+      e
+    end
+  end
 end

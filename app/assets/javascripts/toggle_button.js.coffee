@@ -19,7 +19,5 @@ jQuery ->
     needs_discussion_column= $wrapping_column.find '.need-discussion'
     needs_discussion_column.toggle()
 
-
-  $('.new_bundle_feature').bind 'click', ->
-    $('.show_my_ass').css 'z-index', '1000'
-    $('.show_me').toggle()
+  $('.new_feature_toggle').bind 'click', ->
+    $('.new_form_dropdown').slideToggle('fast')

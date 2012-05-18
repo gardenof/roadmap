@@ -185,20 +185,47 @@ describe BundlesController do
       feature_created.should_not be_nil
       feature_created.project_id.class.should == BSON::ObjectId
       feature_created.bundle_ids[0].class.should == BSON::ObjectId
+      response.should redirect_to project_bundle_path
     end
 
-    it "doesnt create a feature for another bundle" do
-      project = Factory :project
-      hack_project = Factory :project
-      bundle = Factory :bundle, project_id: project.id
+    it "doesnt create a feature for another project" do
+      project_one = Factory :project
+      project_one_bundle = Factory :bundle, project_id: project_one.id
+      project_two = Factory :project
 
       post :create_bundle_feature, {
-        project_id: hack_project.to_param,
-        id: bundle.to_param,
-        feature: {name: 'hoho', description: 'idurfg'}
+        project_id: project_two,
+        id: project_one_bundle,
+        feature: {name: "don't create"}
       }
 
-      Feature.find_by_name('hoho').should be_nil
+      Feature.find_by_name("don't create").should be_nil
+    end
+
+    it "sets lables to nil if none are past in pramas" do
+      project_one = Factory :project
+      project_one_bundle = Factory :bundle, project_id: project_one.id
+
+      post :create_bundle_feature, {
+        project_id: project_one,
+        id: project_one_bundle,
+        feature: {name: "no lables"}
+      }
+
+      Feature.find_by_name("no lables").labels.should == []
+    end
+
+    it "saves lables correctly" do
+      project_one = Factory :project
+      project_one_bundle = Factory :bundle, project_id: project_one.id
+
+      post :create_bundle_feature, {
+        project_id: project_one,
+        id: project_one_bundle,
+        feature: {name: "feature with lables", labels: "one,    two"}
+      }
+
+      Feature.find_by_name("feature with lables").labels.should == ["one","two"]
     end
   end
 end

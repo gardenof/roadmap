@@ -8,6 +8,7 @@
       = link_to 'Unestimated', '#', class: 'underestimated_toggle'
       = link_to 'Needs Discussion', '#', class: 'needs_discussion_toggle'
 %div#notice= notice
+%div#errors= alert
 
 = form_tag schedule_project_bundle_path(@project, @bundle) do |f|
   = submit_tag 'Send Bundle to Tracker', confirm: "This action will create in Tracker any features in the bundle (even undiscussed!) that have not yet been created in Tracker. Features previously sent to Tracker will not be modified."
