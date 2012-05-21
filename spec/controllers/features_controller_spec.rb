@@ -91,6 +91,52 @@ describe FeaturesController do
     end
   end
 
+  describe "destroy" do
+    let (:updatable_feature) {Factory :feature, name: "before update", project_id: project.id}
+    let (:not_updatable_feature) {Factory :feature, story_id: 1123, project_id: project.id}
+
+    it "deletes a feature if it is updatable" do
+      updatable_feature
+      delete :destroy, project_id: project.to_param, id: updatable_feature.id
+
+      Feature.find(updatable_feature.id).should be_nil
+    end
+
+    it "deletes a bundled feature if updatable" do
+      bundle = Factory :bundle
+      updatable_feature
+      delete :destroy, project_id: project.to_param, id: updatable_feature.id, bundle_id: bundle.id
+
+      Feature.find(updatable_feature.id).should be_nil
+    end
+    it "does not delete a bundled feature if not updatable" do
+      bundle = Factory :bundle
+      not_updatable_feature
+      delete :destroy, project_id: project.to_param, id: not_updatable_feature.id, bundle_id: bundle.id
+
+      Feature.find(not_updatable_feature.id).should_not be_nil
+    end
+    it "does not delete a feature if it is not updatable" do
+      not_updatable_feature
+      delete :destroy, project_id: project.to_param, id: not_updatable_feature.id
+
+      Feature.find(not_updatable_feature.id).should_not be_nil
+    end
+
+    it "redirects after delete back to origin features page " do
+      updatable_feature
+      delete :destroy, project_id: project.to_param, id: updatable_feature.id
+      assert_redirected_to project_path(project)
+    end
+
+    it "redirects after delete back to origin bundle page " do
+      bundle = Factory :bundle
+      updatable_feature
+      delete :destroy, project_id: project.to_param, id: updatable_feature.id, redirect_to_bundle_id: bundle.to_param
+      assert_redirected_to project_bundle_path(project, bundle)
+    end
+  end
+
   describe "tracker_web_hook" do
     let (:feature) {Factory :feature, story_id: 1123}
     let (:params_with_name_and_lables) {{"activity"=>{"event_type"=>"story_update",

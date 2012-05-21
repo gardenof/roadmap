@@ -13,4 +13,6 @@
     = f.submit 'Save Changes'
 .floatButton
   = render partial: 'bundles/remove_feature_button', locals: {feature: feature}
-  = button_to 'Delete Feature', project_feature_path(@project,feature.to_param), :confirm => 'Are you sure?', :method => :delete
+  = form_tag(project_feature_path(@project,feature), method: :delete) do
+    = hidden_field_tag 'redirect_to_bundle_id', @bundle.to_param
+    = submit_tag 'Delete Feature', :confirm => 'Are you sure?'
