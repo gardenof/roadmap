@@ -31,10 +31,6 @@ Roadmap::Application.routes.draw do
         on: :member,
         action: :schedule,
         as: 'schedule'
-      put 'update_bundle_feature',
-        on: :member,
-        action: :update_bundle_feature,
-        as: 'update_bundle_feature'
       post 'create_bundle_feature',
         on: :member,
         action: :create_bundle_feature,

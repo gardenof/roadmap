@@ -15,18 +15,6 @@ class BundlesController < ApplicationController
     redirect_to project_bundle_path
   end
 
-  def update_bundle_feature
-    feature_params = params[:feature]
-    @feature = Feature.find(feature_params[:id])
-    if @feature.updatable?
-      @feature.update_attributes(feature_params)
-      redirect_to project_bundle_path
-    else
-      flash[:notice] = "Can't update feature attributes after feature is in Tracker "
-      redirect_to project_bundle_path
-    end
-  end
-
   def show
     @bundle = find_model(model_scope, params[:id])
     @available_features = @bundle.available_features

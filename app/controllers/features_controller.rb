@@ -23,19 +23,22 @@ class FeaturesController < ApplicationController
 
   def update
     @feature = Feature.find(params[:id])
+    associated_bundle_id = params[:redirect_to_bundle_id]
 
     if @feature.updatable?
       @feature.update_attributes(params[:feature])
-      associated_bundle_id = params[:redirect_to_bundle_id]
       if associated_bundle_id != nil
-        redirect_to project_bundle_path(@project, associated_bundle_id)
-        return
+       return redirect_to project_bundle_path(@project, associated_bundle_id)
       end
     else
       flash[:notice] = "Can't update feature attributes after Tracker refresh"
+      if associated_bundle_id != nil
+       return redirect_to project_bundle_path(@project, associated_bundle_id)
+      end
     end
     redirect_to project_feature_path(@project, @feature)
   end
+
 
   def destroy
     @feature = Feature.find(params[:id])
