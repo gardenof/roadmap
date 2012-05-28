@@ -73,6 +73,30 @@ describe FeaturesController do
       assert_redirected_to project_bundle_path(project, bundle)
       flash.now[:notice].should_not be_nil
     end
+
+    it "stores feature BSON in appropriate array depending on which column it's in on bundles page" do
+      bundle = Factory :bundle,
+                       project_id: project.id,
+                       ready_to_schedule_order: [],
+                       ready_for_estimate_order: [],
+                       needing_discussion_order: []
+
+      feature_a = Factory :feature, bundle_ids: [bundle.id], estimate: nil, story_id: nil
+      feature_b = Factory :feature, bundle_ids: [bundle.id], estimate: nil, story_id: nil
+      feature_c = Factory :feature, bundle_ids: [bundle.id], ready_for_estimate_at: Time.now, estimate: nil, story_id: nil
+      bundle.needing_discussion_order = [feature_a.id, feature_b.id]
+      bundle.ready_for_estimate_order = [feature_c.id]
+      bundle.save
+
+      put :update, project_id: project.to_param,
+                   id: feature_a.id,
+                   redirect_to_bundle_id: bundle.to_param,
+                   feature: {ready_for_estimate_at: Time.now}
+
+      bundle.reload
+      bundle.ready_for_estimate_order.should ==  [feature_c.id, feature_a.id ]
+      bundle.needing_discussion_order.should == [feature_b.id]
+    end
   end
 
   describe "schedule" do
@@ -134,6 +158,18 @@ describe FeaturesController do
       updatable_feature
       delete :destroy, project_id: project.to_param, id: updatable_feature.id, redirect_to_bundle_id: bundle.to_param
       assert_redirected_to project_bundle_path(project, bundle)
+    end
+
+    it "deletes feature BSON in appropriate array depending on which column it's in on bundles page" do
+      bundle = Factory :bundle
+      feature = Factory :feature, bundle_ids: [bundle.id]
+      bundle.ready_to_schedule_order = feature.id
+      bundle.save
+      delete :destroy, project_id: project.to_param, id: feature.id
+
+      bundle.reload
+
+      bundle.ready_to_schedule_order.should_not include feature.id
     end
   end
 

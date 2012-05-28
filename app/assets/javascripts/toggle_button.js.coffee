@@ -21,3 +21,8 @@ jQuery ->
 
   $('.new_feature_toggle').bind 'click', ->
     $('.new_form_dropdown').slideToggle('fast')
+
+  $('#list').sortable
+    axis: 'y'
+    update: ->
+      $.post($(this).data(''), $(this).sortable('serialize'))

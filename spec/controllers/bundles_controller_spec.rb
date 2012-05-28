@@ -166,7 +166,7 @@ describe BundlesController do
       Feature.find_by_name("don't create").should be_nil
     end
 
-    it "sets lables to nil if none are past in pramas" do
+    it "sets lables to nil if none are past in params" do
       project_one = Factory :project
       project_one_bundle = Factory :bundle, project_id: project_one.id
 
@@ -191,5 +191,258 @@ describe BundlesController do
 
       Feature.find_by_name("feature with lables").labels.should == ["one","two"]
     end
+
+    it "adds feature BSON to needs-discussion column after creating feature" do
+      project_one = Factory :project
+      project_one_bundle = Factory :bundle, project_id: project_one.id
+
+      post :create_bundle_feature, {
+        project_id: project_one,
+        id: project_one_bundle,
+        feature: {name: "feature with lables", labels: "one,    two"}
+      }
+
+      project_one_bundle.reload
+      project_one_bundle.needing_discussion_order.should include assigns(:feature).id
+    end
+  end
+
+  describe "move_feature" do
+    let(:project) {Factory :project}
+    let(:bundle) {Factory :bundle,
+                 project_id: project.id,
+                 ready_to_schedule_order: [],
+                 ready_for_estimate_order: [],
+                 needing_discussion_order: [] }
+    let(:feature) {Factory :feature, bundle_ids: [bundle.id]}
+    it "redirects" do
+      bundle.ready_to_schedule_order = [feature.id]
+      bundle.save
+
+       post :move_feature,
+        project_id: project.to_param,
+        id: bundle.to_param,
+        feature_id: feature.to_param
+
+       response.should redirect_to project_bundle_path
+    end
+
+    xit "puts the feature_id into the array if it's not present WRITE MIGRATION" do
+      bundle = Factory :bundle,
+        project_id: project.id, positioned_feature_ids: []
+
+      post :move_up_feature,
+        project_id: project.to_param,
+        id: bundle.to_param,
+        feature_id: feature.to_param
+
+      bundle.reload
+      bundle.positioned_feature_ids.should include feature.id
+    end
+
+    it "moves the feature up for schedule column" do
+      feature_a = Factory :feature, bundle_ids: [bundle.id]
+      bundle.ready_to_schedule_order = [feature.id, feature_a.id]
+      bundle.save
+
+      post :move_feature,
+        project_id: project.to_param,
+        id: bundle.to_param,
+        feature_id: feature_a.to_param,
+        direction: 'up'
+
+      bundle.reload
+      bundle.ready_to_schedule_order.should == [feature_a.id, feature.id]
+    end
+
+    it "moves the feature up for needs-discussion column" do
+      feature_a = Factory :feature, bundle_ids: [bundle.id], estimate: nil
+      feature_b = Factory :feature, bundle_ids: [bundle.id], estimate: nil
+      bundle.needing_discussion_order = [feature_a.id, feature_b.id]
+      bundle.save
+
+      post :move_feature,
+        project_id: project.to_param,
+        id: bundle.to_param,
+        feature_id: feature_b.to_param,
+        direction: 'up'
+
+      bundle.reload
+      bundle.needing_discussion_order.should == [feature_b.id, feature_a.id]
+    end
+
+    it "moves the feature up for estimate column" do
+      feature_a = Factory :feature, bundle_ids: [bundle.id], ready_for_estimate_at: Time.now, estimate: nil
+      feature_b = Factory :feature, bundle_ids: [bundle.id], ready_for_estimate_at: Time.now, estimate: nil
+      bundle.ready_for_estimate_order = [feature_a.id, feature_b.id]
+      bundle.save
+
+      post :move_feature,
+        project_id: project.to_param,
+        id: bundle.to_param,
+        feature_id: feature_b.to_param,
+        direction: 'up'
+
+      bundle.reload
+      bundle.ready_for_estimate_order.should == [feature_b.id, feature_a.id]
+    end
+
+    it "should not move up if feature at top for schedule column" do
+      feature_a = Factory :feature, bundle_ids: [bundle.id]
+      feature_b = Factory :feature, bundle_ids: [bundle.id]
+      bundle.ready_to_schedule_order = [feature_a.id, feature_b.id]
+      bundle.save
+
+      post :move_feature,
+        project_id: project.to_param,
+        id: bundle.to_param,
+        feature_id: feature_a.to_param,
+        direction: 'up'
+
+      bundle.reload
+      bundle.ready_to_schedule_order.should == [feature_a.id, feature_b.id]
+    end
+
+    it "should not move up if feature at top for estimate column" do
+      feature_a = Factory :feature, bundle_ids: [bundle.id], estimate: nil, ready_for_estimate_at: Time.now
+      feature_b = Factory :feature, bundle_ids: [bundle.id], estimate: nil, ready_for_estimate_at: Time.now
+      bundle.ready_for_estimate_order = [feature_a.id, feature_b.id]
+      bundle.save
+
+      post :move_feature,
+        project_id: project.to_param,
+        id: bundle.to_param,
+        feature_id: feature_a.to_param,
+        direction: 'up'
+
+      bundle.reload
+      bundle.ready_for_estimate_order.should == [feature_a.id, feature_b.id]
+    end
+
+    it "should not move up if feature at top for needs-discussion column" do
+      feature_a = Factory :feature, bundle_ids: [bundle.id], estimate: nil
+      feature_b = Factory :feature, bundle_ids: [bundle.id], estimate: nil
+      bundle.needing_discussion_order = [feature_a.id, feature_b.id]
+      bundle.save
+
+      post :move_feature,
+        project_id: project.to_param,
+        id: bundle.to_param,
+        feature_id: feature_a.to_param,
+        direction: 'up'
+
+      bundle.reload
+      bundle.needing_discussion_order.should == [feature_a.id, feature_b.id]
+    end
+    it "moves the feature down for schedule column" do
+      feature_a = Factory :feature, bundle_ids: [bundle.id]
+      feature_b = Factory :feature, bundle_ids: [bundle.id]
+      bundle.ready_to_schedule_order = [feature_a.id, feature_b.id]
+      bundle.save
+
+      post :move_feature,
+        project_id: project.to_param,
+        id: bundle.to_param,
+        feature_id: feature_a.to_param,
+        direction: 'down'
+
+      bundle.reload
+      bundle.ready_to_schedule_order.should == [feature_b.id, feature_a.id]
+    end
+    it "moves the feature down for estimate column" do
+      feature_a = Factory :feature, bundle_ids: [bundle.id], estimate: nil, ready_for_estimate_at: Time.now
+      feature_b = Factory :feature, bundle_ids: [bundle.id], estimate: nil, ready_for_estimate_at: Time.now
+      bundle.ready_for_estimate_order = [feature_a.id, feature_b.id]
+      bundle.save
+
+      post :move_feature,
+        project_id: project.to_param,
+        id: bundle.to_param,
+        feature_id: feature_a.to_param,
+        direction: 'down'
+
+      bundle.reload
+      bundle.ready_for_estimate_order.should == [feature_b.id, feature_a.id]
+    end
+    it "moves the feature down for needs-discussion column" do
+      feature_a = Factory :feature, bundle_ids: [bundle.id], estimate: nil
+      feature_b = Factory :feature, bundle_ids: [bundle.id], estimate: nil
+      bundle.needing_discussion_order = [feature_a.id, feature_b.id]
+      bundle.save
+
+      post :move_feature,
+        project_id: project.to_param,
+        id: bundle.to_param,
+        feature_id: feature_a.to_param,
+        direction: 'down'
+
+      bundle.reload
+      bundle.needing_discussion_order.should == [feature_b.id, feature_a.id]
+    end
+
+    it "should not move down if feature at bottom for schedule column" do
+      feature_a = Factory :feature, bundle_ids: [bundle.id]
+      feature_b = Factory :feature, bundle_ids: [bundle.id]
+      bundle.ready_to_schedule_order = [feature_a.id, feature_b.id]
+      bundle.save
+
+      post :move_feature,
+        project_id: project.to_param,
+        id: bundle.to_param,
+        feature_id: feature_b.to_param,
+        direction: 'down'
+
+      bundle.reload
+      bundle.ready_to_schedule_order.should == [feature_a.id, feature_b.id]
+    end
+    it "should not move down if feature at bottom for estimate column" do
+      feature_a = Factory :feature, bundle_ids: [bundle.id], estimate: nil, ready_for_estimate_at: Time.now
+      feature_b = Factory :feature, bundle_ids: [bundle.id], estimate: nil, ready_for_estimate_at: Time.now
+      bundle.ready_for_estimate_order = [feature_a.id, feature_b.id]
+      bundle.save
+
+      post :move_feature,
+        project_id: project.to_param,
+        id: bundle.to_param,
+        feature_id: feature_b.to_param,
+        direction: 'down'
+
+      bundle.reload
+      bundle.ready_for_estimate_order.should == [feature_a.id, feature_b.id]
+    end
+    it "should not move down if feature at bottom for needs-discussion column" do
+      feature_a = Factory :feature, bundle_ids: [bundle.id], estimate: nil
+      feature_b = Factory :feature, bundle_ids: [bundle.id], estimate: nil
+      bundle.needing_discussion_order = [feature_a.id, feature_b.id]
+      bundle.save
+
+      post :move_feature,
+        project_id: project.to_param,
+        id: bundle.to_param,
+        feature_id: feature_b.to_param,
+        direction: 'down'
+
+      bundle.reload
+      bundle.needing_discussion_order.should == [feature_a.id, feature_b.id]
+    end
+
+
+    # it "removes BSON from ready_to_schedule_order when associated feature is deleted" do
+    #   feature_a = Factory :feature, bundle_ids: [bundle.id]
+    #   feature_b = Factory :feature, bundle_ids: [bundle.id]
+    #   bundle.ready_to_schedule_order = [feature_a.id, feature_b.id]
+    #   bundle.save
+
+
+    # end
+
+    it "del id from bundle.positioned_feature_ids when feature is deleted MOVE TEST IF NEED" do
+
+    end
+
+    it "del id from bundle.positioned_feature_ids when feature removed from bundle MOVE TEST IF NEED" do
+
+    end
+
   end
 end

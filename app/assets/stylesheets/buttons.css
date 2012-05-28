@@ -21,3 +21,7 @@
   float: left;
   margin: 0 5px;
 }
+
+.up_btn {
+  float: right;
+}

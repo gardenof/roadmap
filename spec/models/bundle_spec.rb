@@ -24,6 +24,21 @@ describe "Bundle" do
     end
   end
 
+  describe "sorts by position array" do
+    it "sorts" do
+      a = Factory :feature, bundle_ids: [bundle.id]
+      b = Factory :feature, bundle_ids: [bundle.id]
+      c = Factory :feature, bundle_ids: [bundle.id]
+
+      bundle.positioned_feature_ids = [c.id, b.id, a.id]
+      features_to_sort = [c, b, a]
+      bundle.sort_features(features_to_sort, bundle.positioned_feature_ids).should == [c, b, a]
+
+      bundle.positioned_feature_ids= [a.id, b.id, c.id]
+      bundle.sort_features(features_to_sort, bundle.positioned_feature_ids).should == [a, b, c]
+    end
+  end
+
   describe "available features" do
     it "includes features attached to other bundles" do
       other_feature = Factory :feature,
@@ -74,6 +89,13 @@ describe "Bundle" do
       create_nil_features
 
       bundle.unestimated_count.should == 2
+    end
+  end
+
+  describe "features_needing_discussion" do
+    it "includes features needs_discussione" do
+      f = Factory :feature, bundle_ids: [bundle.id], estimate: nil
+      bundle.features_needing_discussion.should include f
     end
   end
 

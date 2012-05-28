@@ -35,6 +35,14 @@ Roadmap::Application.routes.draw do
         on: :member,
         action: :create_bundle_feature,
         as: 'create_bundle_feature'
+      post 'move_feature',
+        on: :member,
+        action: :move_feature,
+        as: 'move_feature'
+      post 'move_down_feature',
+        on: :member,
+        action: :move_down_feature,
+        as: 'move_down_feature'
     end
   end
 end

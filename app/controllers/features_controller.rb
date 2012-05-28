@@ -24,9 +24,9 @@ class FeaturesController < ApplicationController
   def update
     @feature = Feature.find(params[:id])
     associated_bundle_id = params[:redirect_to_bundle_id]
-
     if @feature.updatable?
       @feature.update_attributes(params[:feature])
+      update_bundle_order_arrays(@feature, @feature.bundles)
       if associated_bundle_id != nil
        return redirect_to project_bundle_path(@project, associated_bundle_id)
       end
@@ -39,25 +39,12 @@ class FeaturesController < ApplicationController
     redirect_to project_feature_path(@project, @feature)
   end
 
-
-  # def destroy
-  #   @feature = Feature.find(params[:id])
-
-  #   if @feature.updatable?
-  #     raise params
-  #     @feature.destroy
-  #     redirect_to project_path(@project)
-  #   else
-  #     flash[:notice] = "Can't delete feature attributes after Tracker refresh"
-  #     redirect_to project_feature_path(@project, @feature)
-  #   end
-  # end
-
   def destroy
     @feature = Feature.find(params[:id])
     associated_bundle_id = params[:redirect_to_bundle_id]
     if @feature.updatable?
-        @feature.destroy
+      remove_bundle_id_from_order_array(@feature, @feature.bundles)
+      @feature.destroy
       if associated_bundle_id != nil
         return redirect_to project_bundle_path(@project, associated_bundle_id)
       end
@@ -104,4 +91,35 @@ class FeaturesController < ApplicationController
       render text: "ok"
     end
   end
+
+  protected
+
+  def update_bundle_order_arrays(feature, bundles)
+    bundle = bundles.first
+    return if bundle == nil
+    if feature.ready_for_estimate?
+      bundle.needing_discussion_order.delete feature.id
+      bundle.ready_for_estimate_order.push feature.id
+    elsif feature.ready_to_schedule?
+      bundle.ready_for_estimate_order.delete feature.id
+      bundle.ready_to_schedule_order.push feature.id
+    end
+    bundle.save
+  end
+
+  def remove_bundle_id_from_order_array(feature, bundles)
+    bundle = bundles.first
+    return if bundle == nil
+    case true
+    when bundle.needing_discussion_order.include?(feature.id)
+      bundle.needing_discussion_order.delete feature.id
+    when bundle.ready_for_estimate_order.include?(feature.id)
+      bundle.ready_for_estimate_order.delete feature.id
+    when bundle.ready_to_schedule_order.include?(feature.id)
+      bundle.ready_to_schedule_order.delete feature.id
+    end
+    bundle.save
+  end
 end
+
+

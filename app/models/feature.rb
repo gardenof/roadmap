@@ -17,6 +17,7 @@ class Feature
   key :refreshed_at,          Time
   key :story_id,              Integer # Pivotal Tracker's ID
   key :story_type,            String
+  key :position,              Integer, default: 0
 
   key :project_id,            ObjectId
   belongs_to :project
