@@ -64,16 +64,7 @@ class BundlesController < ApplicationController
     @bundled_features = @bundle.features_ready_to_schedule(@bundle.ready_to_schedule_order)
     @estimable_features = @bundle.features_ready_for_estimate(@bundle.ready_for_estimate_order)
     @features_needing_discussion = @bundle.features_needing_discussion(@bundle.needing_discussion_order)
-    update_bundle_order_arrays(@bundle)
     respond_with @bundle
-  end
-
-  def update_bundle_order_arrays(bundle)
-    if condition
-
-    else
-
-    end
   end
 
   def add_feature
