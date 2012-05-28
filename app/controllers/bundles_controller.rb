@@ -85,7 +85,7 @@ class BundlesController < ApplicationController
 
   def schedule
     @bundle = find_model(model_scope, params[:id])
-    features_to_schedule = Feature.find_all_by_bundle_ids(@bundle.id)
+    features_to_schedule = features_preserve_order_for_tracker(@bundle)
 
     fail_messages = []
     fail_messages << "Please add features to the bundle before scheduling." unless features_to_schedule.any?
@@ -130,5 +130,9 @@ class BundlesController < ApplicationController
     rescue Exception => e
       e
     end
+  end
+
+  def features_preserve_order_for_tracker(bundle)
+    Feature.find_all_by_bundle_ids(bundle.id).reverse
   end
 end
