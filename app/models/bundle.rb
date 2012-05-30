@@ -26,16 +26,39 @@ class Bundle
 
   def features_needing_discussion(position=[])
     features_needing_discussion=features.select { |f| f.needs_discussion? }
+    if features_needing_discussion.count > self.needing_discussion_order.count
+        self.needing_discussion_order.clear
+        features_needing_discussion.each do |feature|
+          self.needing_discussion_order.push(feature.id)
+        end
+        self.save
+    end
     sort_features(features_needing_discussion, position)
   end
 
   def features_ready_for_estimate(position=[])
     features_ready_for_estimate=features.select { |f| f.ready_for_estimate? }
+
+    if features_ready_for_estimate.count > self.ready_for_estimate_order.count
+        self.ready_for_estimate_order.clear
+        features_ready_for_estimate.each do |feature|
+          self.ready_for_estimate_order.push(feature.id)
+        end
+        self.save
+    end
     sort_features(features_ready_for_estimate, position)
   end
 
   def features_ready_to_schedule(position=[])
     features_ready_to_schedule = features.select { |f| f.ready_to_schedule? }
+
+    if features_ready_to_schedule.count > self.ready_to_schedule_order.count
+      self.ready_to_schedule_order.clear
+      features_ready_to_schedule.each do |feature|
+          self.ready_to_schedule_order.push(feature.id)
+      end
+          self.save
+    end
     sort_features(features_ready_to_schedule, position)
   end
 

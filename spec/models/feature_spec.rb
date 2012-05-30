@@ -181,4 +181,11 @@ describe Feature do
       f.should be_needs_discussion
     end
   end
+
+  describe "Iterations" do
+    it "should respond to iterations" do
+      feature = Factory.build(:feature)
+      feature.should respond_to :iteration
+    end
+  end
 end

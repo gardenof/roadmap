@@ -45,6 +45,17 @@ describe BundlesController do
       get :show, show_params
       assigns(:estimable_features).should == bundle.features_ready_for_estimate
     end
+
+    it "should have order arrays populated with all its feature_ids" do
+      feature_in_needing_discussion_column = Factory :feature, project_id: project.id, bundle_ids: [bundle.id], estimate: nil
+      feature_in_schedule_column = Factory :feature, project_id: project.id, bundle_ids: [bundle.id]
+      feature_in_estimate_column = Factory :feature, project_id: project.id, bundle_ids: [bundle.id], ready_for_estimate_at: Time.now, estimate: nil
+      get :show, show_params
+      bundle.reload
+      bundle.needing_discussion_order.should_not == []
+      bundle.ready_to_schedule_order.should_not == []
+      bundle.ready_for_estimate_order.should_not == []
+    end
   end
 
   describe "schedule action" do
@@ -225,19 +236,6 @@ describe BundlesController do
         feature_id: feature.to_param
 
        response.should redirect_to project_bundle_path
-    end
-
-    xit "puts the feature_id into the array if it's not present WRITE MIGRATION" do
-      bundle = Factory :bundle,
-        project_id: project.id, positioned_feature_ids: []
-
-      post :move_up_feature,
-        project_id: project.to_param,
-        id: bundle.to_param,
-        feature_id: feature.to_param
-
-      bundle.reload
-      bundle.positioned_feature_ids.should include feature.id
     end
 
     it "moves the feature up for schedule column" do

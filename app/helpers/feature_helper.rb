@@ -13,4 +13,8 @@ module FeatureHelper
       "#{feature.estimate}"
     end
   end
+
+  def iteration_format(iteration)
+    iteration.asctime
+  end
 end

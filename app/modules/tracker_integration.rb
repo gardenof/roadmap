@@ -58,17 +58,42 @@ module TrackerIntegration
       feature ||= Feature.new
       feature.project_id = project.id
       feature.update(story, refresh_time).save
-    end  
+    end
       mark_deleted_features(tracker_project,refresh_time)
+      iteration(tracker_project.id)
+  end
+
+  def self.iteration(tracker_project_id)
+    tracker_project=PivotalTracker::Project.find(tracker_project_id)
+    iteration_tracker_array = tracker_project.iteration(:backlog)
+    iteration_hash(iteration_tracker_array, tracker_project_id)
+  end
+
+  def self.iteration_hash(iteration_tracker_array, tracker_project_id)
+    new_hash= {}
+    iteration_tracker_array.each do |date|
+      it_date = date.start
+      it_time = Time.local(it_date.year, it_date.month, it_date.day, it_date.hour, it_date.min,it_date.sec)
+
+      stories = date.stories
+      stories.each do |story|
+        new_hash[story.id.to_s] = it_time
+      end
+    end
+    new_hash.each do |story_id, iter_date|
+      feature = Feature.find_by_story_id(story_id.to_i)
+      feature.iteration = iter_date
+      feature.save
+    end
   end
 
   def self.mark_deleted_features(tracker_project,refresh_time)
       project =Project.find_by_tracker_project_id(tracker_project.id)
-      
+
       refresh_time_without_usec=refresh_time.change(:usec => 0)
 
       Feature.set({:project_id => project.id,
-        refreshed_at: { :$lt => refresh_time_without_usec }}, 
+        refreshed_at: { :$lt => refresh_time_without_usec }},
         :story_type => "Deleted", :story_id => nil)
   end
 
@@ -79,8 +104,8 @@ module TrackerIntegration
   end
 
   def self.create_story_for_project(tracker_project, feature)
-    tracker_project.stories.create(name: feature.name, 
-      estimate: feature.estimate, labels: feature.labels, 
+    tracker_project.stories.create(name: feature.name,
+      estimate: feature.estimate, labels: feature.labels,
       description: feature.description)
   end
 

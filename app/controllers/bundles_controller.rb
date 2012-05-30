@@ -23,27 +23,6 @@ class BundlesController < ApplicationController
   end
 
 
-  def new_order(feature,order,direction)
-    feature_index = order.index(feature.id)
-    if direction == 'up'
-      new_position_index = feature_index!=0 ? (feature_index-1) : nil
-      if new_position_index != nil
-        order.slice!(feature_index)
-        order.insert(new_position_index,feature.id)
-      else
-        nil
-      end
-    elsif direction == 'down'
-      new_position_index = feature_index!= (order.count-1) ? (feature_index+1) : nil
-        if new_position_index != nil
-          order.slice!(feature_index)
-          order.insert(new_position_index,feature.id)
-        else
-          nil
-        end
-    end
-  end
-
   def create_bundle_feature
     new_feature_params = get_bundled_feature_params_and_id_check(params)
       @feature = Feature.new(new_feature_params)
@@ -113,6 +92,27 @@ class BundlesController < ApplicationController
   end
 
   protected
+
+  def new_order(feature,order,direction)
+    feature_index = order.index(feature.id)
+    if direction == 'up'
+      new_position_index = feature_index!=0 ? (feature_index-1) : nil
+      if new_position_index != nil
+        order.slice!(feature_index)
+        order.insert(new_position_index,feature.id)
+      else
+        nil
+      end
+    elsif direction == 'down'
+      new_position_index = feature_index!= (order.count-1) ? (feature_index+1) : nil
+        if new_position_index != nil
+          order.slice!(feature_index)
+          order.insert(new_position_index,feature.id)
+        else
+          nil
+        end
+    end
+  end
 
   def get_bundled_feature_params_and_id_check(params)
     feature_params = params[:feature]

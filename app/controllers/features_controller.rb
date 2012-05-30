@@ -97,10 +97,10 @@ class FeaturesController < ApplicationController
   def update_bundle_order_arrays(feature, bundles)
     bundle = bundles.first
     return if bundle == nil
-    if feature.ready_for_estimate?
+    if feature.ready_for_estimate? && bundle.needing_discussion_order.include?(feature.id)
       bundle.needing_discussion_order.delete feature.id
       bundle.ready_for_estimate_order.push feature.id
-    elsif feature.ready_to_schedule?
+    elsif feature.ready_to_schedule? && bundle.ready_for_estimate_order.include?(feature.id)
       bundle.ready_for_estimate_order.delete feature.id
       bundle.ready_to_schedule_order.push feature.id
     end

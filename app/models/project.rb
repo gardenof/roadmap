@@ -7,7 +7,10 @@ class Project
   key :tracker_project_id,  Integer
   key :refreshed_at,        Time
 
+
   has_many :bundles
   has_many :features
+
+
 
 end
