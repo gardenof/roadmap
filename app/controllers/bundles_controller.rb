@@ -26,6 +26,7 @@ class BundlesController < ApplicationController
   def create_bundle_feature
     new_feature_params = get_bundled_feature_params_and_id_check(params)
       @feature = Feature.new(new_feature_params)
+      @feature.story_type = TrackerIntegration::StoryType::Feature
       if @feature.save
         @bundle = find_model(model_scope, params[:id])
         @bundle.needing_discussion_order.push(@feature.id)
@@ -95,6 +96,7 @@ class BundlesController < ApplicationController
 
   def new_order(feature,order,direction)
     feature_index = order.index(feature.id)
+    # raise "wtf"
     if direction == 'up'
       new_position_index = feature_index!=0 ? (feature_index-1) : nil
       if new_position_index != nil

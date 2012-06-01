@@ -163,6 +163,24 @@ describe BundlesController do
       response.should redirect_to project_bundle_path
     end
 
+
+    it "should have a story_type after the feature is created" do
+      project = Factory :project
+      bundle = Factory :bundle, project_id: project.id
+
+       post :create_bundle_feature, {
+        project_id: project.to_param,
+        id: bundle.to_param,
+        feature: {name: 'story_type feature'}
+      }
+
+      feature_created = Feature.find_by_name('story_type feature')
+      feature_created.story_type.should eq("feature")
+
+
+
+    end
+
     it "doesnt create a feature for another project" do
       project_one = Factory :project
       project_one_bundle = Factory :bundle, project_id: project_one.id

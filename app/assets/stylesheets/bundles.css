@@ -12,13 +12,20 @@
 }
 
 .new_form_dropdown {
-  background-color: #256841;
-  color: white;
+  background-color: #E9E7DD;
+  color: #000000;
   display: none;
+  margin: 0 2px 0 2px;
+  padding: 5px 10px 10px 10px;
 }
 
-.new_form_dropdown textarea {
+.new_form_dropdown textarea,.new_form_dropdown input {
+  width: 98%;
   resize: none;
+}
+.save_button input {
+  width: 99%;
+  margin-left: 1px;
 }
 
 .new_form_dropdown label {
