@@ -1,6 +1,7 @@
 - if feature.updatable?
   = form_tag(project_schedule_path(@project), method: :post) do
     = hidden_field_tag 'feature_id', feature.id
+    = hidden_field_tag 'bundle_id' , @bundle.id
     = submit_tag 'Schedule Feature',
     confirm: 'Are you sure?  This is synchronous for the moment'
 - elsif feature.current_state == "unstarted"

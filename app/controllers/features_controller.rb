@@ -64,12 +64,16 @@ class FeaturesController < ApplicationController
 
   def schedule
     @feature = Feature.find(params[:feature_id])
+    @bundle  = Bundle.find(params[:bundle_id])
 
-    # create the story in tracker
     @feature.create_in_tracker
     @feature.save
-
-    redirect_to project_feature_path(@project, @feature)
+    
+    if params[:bundle_id] != nil
+      redirect_to project_bundle_path(@project, @bundle)
+    else
+      redirect_to project_feature_path(@project, @feature)
+    end
   end
 
   def tracker_web_hook

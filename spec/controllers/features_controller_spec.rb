@@ -100,18 +100,33 @@ describe FeaturesController do
   end
 
   describe "schedule" do
-    it "creates the feature in tracker" do
-      new_story = Factory.build :tracker_story
+    let (:new_story) {Factory.build :tracker_story}
+    let (:bundle) {Factory :bundle, project_id: project.id}
+    let (:feature_to_schedule) {Factory :feature, story_id: nil, 
+                                                  project_id: project.id, 
+                                                  bundle_ids: [bundle.id]}
+    let (:params_without_bundle) {{project_id: project.id, 
+                                   feature_id: feature_to_schedule.id}}
+    let (:params_with_bundle) {{project_id: project.id,
+                                feature_id: feature_to_schedule.id,
+                                bundle_id: bundle.id}}
+    before :each do
       TrackerIntegration.stub(:create_feature_in_tracker).and_return(new_story)
+    end
 
-      feature_to_schedule =
-        Factory :feature, story_id: nil, project_id: project.id
-
-      # PUT /features/run_schedule [params]
-      post :schedule, project_id: project.id,
-        :feature_id => feature_to_schedule.id
-
+    it "creates the feature in tracker" do
+      post :schedule, params_without_bundle
       assigns(:feature).story_id.should_not be_nil
+    end
+
+    it "redirecting to feature if no bundle in params" do
+      post :schedule, params_without_bundle
+      assert_redirected_to project_feature_path(project, feature_to_schedule)
+    end
+
+    it "redirecting to bundle if bundle in params" do 
+      post :schedule, params_with_bundle
+      assert_redirected_to project_bundle_path(project, bundle)
     end
   end
 
