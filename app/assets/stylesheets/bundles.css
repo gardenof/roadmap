@@ -39,7 +39,7 @@
 }
 
 #popup_discription {
-  background-color: green;
+  background-color: #E9E7DD;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
@@ -52,8 +52,7 @@
   -webkit-border-top-right-radius: 6px;
   -webkit-border-bottom-right-radius: 6px;
   -webkit-border-bottom-left-radius: 6px;
-  color: #FFFFFF;
-  left: 70px;
+  left: 40px;
  /* opacity: 0.85;
   -moz-opacity: 0.85;
   filter:alpha(1);*/
