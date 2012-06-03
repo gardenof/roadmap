@@ -1,0 +1,21 @@
+= form_tag(create_bundle_feature_project_bundle_path(@project,@bundle), method: :post) do
+  -if @feature.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@feature.errors.count, "error")} prohibited this feature from being saved:"
+      %ul
+        - @feature.errors.full_messages.each do |msg|
+          %li= msg
+  .field
+    = label_tag "Name"
+    %br
+    = text_field_tag 'feature[name]', @feature.name
+  .field
+    = label_tag "tags"
+    %br
+    = text_field_tag 'feature[labels]', @feature.labels, size: 3
+  .field
+    = label_tag "description"
+    %br
+    = text_area_tag 'feature[description]', @feature.description, :size => "45x10"
+  .field
+    = submit_tag 'Save'

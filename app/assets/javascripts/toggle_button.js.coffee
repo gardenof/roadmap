@@ -1,3 +1,13 @@
+
+path = location.pathname
+split_path = path.split('/')
+Dropdown =
+  page_identifier: split_path[split_path.length - 1],
+
+  show_form: ->
+    if this.page_identifier == "create_bundle_feature"
+      return true
+
 jQuery ->
 
   $('.bundled_toggle').click (e) ->
@@ -19,8 +29,16 @@ jQuery ->
     needs_discussion_column= $wrapping_column.find '.need-discussion'
     needs_discussion_column.toggle()
 
-  $('.new_feature_toggle').bind 'click', ->
-    $('.new_form_dropdown').slideToggle('fast')
+
+  $dropdown_form = $('.new_feature_toggle')
+
+  $dropdown_form.bind 'click', ->      
+    $('.new_form_dropdown')
+      .slideToggle('fast')
+
+  if Dropdown.show_form
+    $dropdown_form.trigger('click')
+
 
   $('#list').sortable
     axis: 'y'

@@ -24,26 +24,27 @@ class BundlesController < ApplicationController
 
 
   def create_bundle_feature
-    new_feature_params = get_bundled_feature_params_and_id_check(params)
-      @feature = Feature.new(new_feature_params)
-      @feature.story_type = TrackerIntegration::StoryType::Feature
-      if @feature.save
-        @bundle = find_model(model_scope, params[:id])
-        @bundle.needing_discussion_order.push(@feature.id)
-        @bundle.save
-        flash[:notice] = "Feature was created"
-      else
-        flash[:alert] = @feature.errors.full_messages
-      end
+    new_feature_params_hash = get_bundled_feature_params_and_id_check_hash
+    return redirect_to project_path(@project) if new_feature_params_hash.empty?
+    @feature = Feature.new(new_feature_params_hash)
+    @feature.story_type = TrackerIntegration::StoryType::Feature
+    @bundle = find_model(model_scope, params[:id])
+    if @feature.save 
+      @bundle.needing_discussion_order.push(@feature.id)
+      @bundle.save
+      flash[:notice] = "Feature was created"
+    else
+      flash[:alert] = @feature.errors.full_messages
+      populate_bundled_features(@bundle)
+      return render 'show'
+    end
     redirect_to project_bundle_path
   end
 
   def show
+    @feature = Feature.new
     @bundle = find_model(model_scope, params[:id])
-    @available_features = @bundle.available_features
-    @bundled_features = @bundle.features_ready_to_schedule(@bundle.ready_to_schedule_order)
-    @estimable_features = @bundle.features_ready_for_estimate(@bundle.ready_for_estimate_order)
-    @features_needing_discussion = @bundle.features_needing_discussion(@bundle.needing_discussion_order)
+    populate_bundled_features(@bundle)
     respond_with @bundle
   end
 
@@ -116,7 +117,7 @@ class BundlesController < ApplicationController
     end
   end
 
-  def get_bundled_feature_params_and_id_check(params)
+  def get_bundled_feature_params_and_id_check_hash
     feature_params = params[:feature]
 
     begin
@@ -127,11 +128,21 @@ class BundlesController < ApplicationController
                      bundle_ids: [bundle.id],
                      labels: labels
                    }
-        feature_params.merge(new_hash)
+        return feature_params.merge(new_hash)
       end
+
+      raise 'You cannot save feature in another bundle'
     rescue Exception => e
-      e
+      flash[:alert] = e.message
+      {}
     end
+  end
+
+  def populate_bundled_features(bundle)
+    @available_features = bundle.available_features
+    @bundled_features = bundle.features_ready_to_schedule(@bundle.ready_to_schedule_order)
+    @estimable_features = bundle.features_ready_for_estimate(@bundle.ready_for_estimate_order)
+    @features_needing_discussion = bundle.features_needing_discussion(@bundle.needing_discussion_order)
   end
 
   def features_preserve_order_for_tracker(bundle)

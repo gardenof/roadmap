@@ -146,15 +146,19 @@ describe BundlesController do
 
 
   describe "create_bundle_feature" do
-    it "creates a feature in a bundle and sets project_id, bundle_ids correctly" do
-      project = Factory :project
-      bundle = Factory :bundle, project_id: project.id
-
-      post :create_bundle_feature, {
-        project_id: project.to_param,
+    let(:project) {Factory :project}
+    let(:bundle) {Factory :bundle, project_id: project.id}
+    def create_bundle_feature_params(name = nil, label= "") 
+      { project_id: project.to_param,
         id: bundle.to_param,
-        feature: {name: 'hoho'}
+        feature: {name: name, labels: label}
       }
+    end
+   
+
+    it "creates a feature in a bundle and sets project_id, bundle_ids correctly" do
+
+      post :create_bundle_feature, create_bundle_feature_params('hoho')
 
       feature_created=Feature.find_by_name('hoho')
       feature_created.should_not be_nil
@@ -165,14 +169,8 @@ describe BundlesController do
 
 
     it "should have a story_type after the feature is created" do
-      project = Factory :project
-      bundle = Factory :bundle, project_id: project.id
 
-       post :create_bundle_feature, {
-        project_id: project.to_param,
-        id: bundle.to_param,
-        feature: {name: 'story_type feature'}
-      }
+      post :create_bundle_feature, create_bundle_feature_params('story_type feature')
 
       feature_created = Feature.find_by_name('story_type feature')
       feature_created.story_type.should eq("feature")
@@ -182,13 +180,12 @@ describe BundlesController do
     end
 
     it "doesnt create a feature for another project" do
-      project_one = Factory :project
-      project_one_bundle = Factory :bundle, project_id: project_one.id
-      project_two = Factory :project
+      second_project = Factory :project
+      project_one_bundle = bundle
 
       post :create_bundle_feature, {
-        project_id: project_two,
-        id: project_one_bundle,
+        project_id: second_project.to_param,
+        id: project_one_bundle.to_param,
         feature: {name: "don't create"}
       }
 
@@ -196,41 +193,18 @@ describe BundlesController do
     end
 
     it "sets lables to nil if none are past in params" do
-      project_one = Factory :project
-      project_one_bundle = Factory :bundle, project_id: project_one.id
-
-      post :create_bundle_feature, {
-        project_id: project_one,
-        id: project_one_bundle,
-        feature: {name: "no lables"}
-      }
-
+      post :create_bundle_feature, create_bundle_feature_params('no lables')
       Feature.find_by_name("no lables").labels.should == []
     end
 
     it "saves lables correctly" do
-      project_one = Factory :project
-      project_one_bundle = Factory :bundle, project_id: project_one.id
-
-      post :create_bundle_feature, {
-        project_id: project_one,
-        id: project_one_bundle,
-        feature: {name: "feature with lables", labels: "one,    two"}
-      }
-
+      post :create_bundle_feature, create_bundle_feature_params("feature with lables", "one,     two")
       Feature.find_by_name("feature with lables").labels.should == ["one","two"]
     end
 
     it "adds feature BSON to needs-discussion column after creating feature" do
-      project_one = Factory :project
-      project_one_bundle = Factory :bundle, project_id: project_one.id
-
-      post :create_bundle_feature, {
-        project_id: project_one,
-        id: project_one_bundle,
-        feature: {name: "feature with lables", labels: "one,    two"}
-      }
-
+      project_one_bundle = bundle
+      post :create_bundle_feature, create_bundle_feature_params('generic feature')
       project_one_bundle.reload
       project_one_bundle.needing_discussion_order.should include assigns(:feature).id
     end
