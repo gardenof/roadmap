@@ -42,6 +42,13 @@ describe FeaturesController do
   describe "update" do
     let (:updatable_feature) {Factory :feature, name: "before update", project_id: project.id}
     let (:not_updatable_feature) {Factory :feature, story_id: 1123, project_id: project.id}
+    let(:bundle) {
+      Factory :bundle,
+                       project_id: project.id,
+                       ready_to_schedule_order: [],
+                       ready_for_estimate_order: [],
+                       needing_discussion_order: []
+    }
     it "changes value" do
       updatable_feature
       put :update, project_id: project.to_param,
@@ -51,7 +58,6 @@ describe FeaturesController do
     end
 
     it "redirecting correctly when updatable bundled feature" do
-      bundle = Factory :bundle
       put :update, project_id: project.to_param, id: updatable_feature.id, redirect_to_bundle_id: bundle.to_param
       assert_redirected_to project_bundle_path(project, bundle)
     end
@@ -68,19 +74,12 @@ describe FeaturesController do
     end
 
     it "redirecting correctly when not updatable bundled feature and flash notice" do
-      bundle = Factory :bundle
       put :update, project_id: project.to_param, id: not_updatable_feature.id, redirect_to_bundle_id: bundle.to_param
       assert_redirected_to project_bundle_path(project, bundle)
       flash.now[:notice].should_not be_nil
     end
 
     it "stores feature BSON in appropriate array depending on which column it's in on bundles page" do
-      bundle = Factory :bundle,
-                       project_id: project.id,
-                       ready_to_schedule_order: [],
-                       ready_for_estimate_order: [],
-                       needing_discussion_order: []
-
       feature_a = Factory :feature, bundle_ids: [bundle.id], estimate: nil, story_id: nil
       feature_b = Factory :feature, bundle_ids: [bundle.id], estimate: nil, story_id: nil
       feature_c = Factory :feature, bundle_ids: [bundle.id], ready_for_estimate_at: Time.now, estimate: nil, story_id: nil
@@ -102,10 +101,10 @@ describe FeaturesController do
   describe "schedule" do
     let (:new_story) {Factory.build :tracker_story}
     let (:bundle) {Factory :bundle, project_id: project.id}
-    let (:feature_to_schedule) {Factory :feature, story_id: nil, 
-                                                  project_id: project.id, 
+    let (:feature_to_schedule) {Factory :feature, story_id: nil,
+                                                  project_id: project.id,
                                                   bundle_ids: [bundle.id]}
-    let (:params_without_bundle) {{project_id: project.id, 
+    let (:params_without_bundle) {{project_id: project.id,
                                    feature_id: feature_to_schedule.id}}
     let (:params_with_bundle) {{project_id: project.id,
                                 feature_id: feature_to_schedule.id,
@@ -124,7 +123,7 @@ describe FeaturesController do
       assert_redirected_to project_feature_path(project, feature_to_schedule)
     end
 
-    it "redirecting to bundle if bundle in params" do 
+    it "redirecting to bundle if bundle in params" do
       post :schedule, params_with_bundle
       assert_redirected_to project_bundle_path(project, bundle)
     end
