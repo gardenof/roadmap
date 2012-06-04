@@ -14,8 +14,7 @@ describe BundlesController do
     { name: "Update Name"}
   end
 
-
-  describe "show" do
+ describe "show" do
     let(:project) {Factory :project}
     let(:bundle)  {Factory :bundle, project_id: project.id}
 
@@ -148,13 +147,13 @@ describe BundlesController do
   describe "create_bundle_feature" do
     let(:project) {Factory :project}
     let(:bundle) {Factory :bundle, project_id: project.id}
-    def create_bundle_feature_params(name = nil, label= "") 
+    def create_bundle_feature_params(name = nil, label= "", description = "")
       { project_id: project.to_param,
         id: bundle.to_param,
-        feature: {name: name, labels: label}
+        feature: {name: name, labels: label, description: description}
       }
     end
-   
+
 
     it "creates a feature in a bundle and sets project_id, bundle_ids correctly" do
       post :create_bundle_feature, create_bundle_feature_params('hoho')
@@ -195,6 +194,18 @@ describe BundlesController do
       Feature.find_by_name("feature with lables").labels.should == ["one","two"]
     end
 
+    it "should show form values even after a feature was unsuccessfully saved" do
+      post :create_bundle_feature, create_bundle_feature_params(nil, "NoName", "I have no name" )
+      bundle.reload
+      assigns(:feature).description.should eq("I have no name")
+    end
+
+    it "does not redirect after validation failure" do
+      post :create_bundle_feature, create_bundle_feature_params(nil,"NoName","I have no name" )
+      bundle.reload
+      response.should_not be_redirect
+    end
+
     it "adds feature BSON to needs-discussion column after creating feature" do
       project_one_bundle = bundle
       post :create_bundle_feature, create_bundle_feature_params('generic feature')
@@ -210,17 +221,17 @@ describe BundlesController do
                  ready_to_schedule_order: [],
                  ready_for_estimate_order: [],
                  needing_discussion_order: [] }
-    
+
     let(:first_feature) {Factory :feature, bundle_ids: [bundle.id]}
     let(:second_feature) {Factory :feature, bundle_ids: [bundle.id]}
-    
+
 
     def feature(est = nil, ready_time = nil)
-      Factory :feature, { 
+      Factory :feature, {
       bundle_ids: [bundle.id],
       estimate: est,
-      ready_for_estimate_at: ready_time 
-    } 
+      ready_for_estimate_at: ready_time
+    }
     end
 
     def move_feature_params(direction, feature = first_feature)
@@ -348,7 +359,7 @@ describe BundlesController do
 
     it "should return back to project_bundle_show page if the direction setting is not up or down" do
       post :move_feature, move_feature_params('left')
-      response.should redirect_to project_bundle_path 
+      response.should redirect_to project_bundle_path
       flash[:alert].should ==("Do not change direction settings for button!")
     end
   end

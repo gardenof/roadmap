@@ -4,7 +4,7 @@ class BundlesController < ApplicationController
   model_scope [:project]
   model_class Bundle
 
-  module DIRECTION 
+  module DIRECTION
     UP = "up"
     DOWN = "down"
   end
@@ -34,7 +34,7 @@ class BundlesController < ApplicationController
     @feature = Feature.new(new_feature_params_hash)
     @feature.story_type = TrackerIntegration::StoryType::Feature
     @bundle = find_model(model_scope, params[:id])
-    if @feature.save 
+    if @feature.save
       @bundle.needing_discussion_order.push(@feature.id)
       @bundle.save
       flash[:notice] = "Feature was created"

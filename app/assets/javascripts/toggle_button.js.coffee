@@ -1,8 +1,7 @@
-
 path = location.pathname
 split_path = path.split('/')
 Dropdown =
-  page_identifier: split_path[split_path.length - 1],
+  page_identifier: split_path[split_path.length - 1]
 
 jQuery ->
 
@@ -28,15 +27,10 @@ jQuery ->
 
   $dropdown_form = $('.new_feature_toggle')
 
-  $dropdown_form.bind 'click', ->      
+  $dropdown_form.bind 'click', ->
     $('.new_form_dropdown')
       .slideToggle('fast')
 
   if Dropdown.page_identifier == "create_bundle_feature"
     $dropdown_form.trigger('click')
 
-
-  $('#list').sortable
-    axis: 'y'
-    update: ->
-      $.post($(this).data(''), $(this).sortable('serialize'))
