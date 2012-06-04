@@ -8,6 +8,7 @@
       = link_to 'Unestimated', '#', class: 'underestimated_toggle'
       = link_to 'Needs Discussion', '#', class: 'needs_discussion_toggle'
 %div#notice= notice
+%div#alert= alert
 
 
 = form_tag schedule_project_bundle_path(@project, @bundle) do |f|

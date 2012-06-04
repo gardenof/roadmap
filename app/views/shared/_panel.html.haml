@@ -25,7 +25,7 @@
         %img.feature-toggle{src: '/assets/collapsed.png'}
         %img.feature-toggle.popup_btn{src: '/assets/description_popup_btn.png'}
         = link_to image_tag('/assets/up_btn.png', class: 'up_btn'), move_feature_project_bundle_path(feature_id: feature.id, direction: 'up'), {method: :post}
-        = link_to image_tag('/assets/down_btn.png', class: 'up_btn'), move_feature_project_bundle_path(feature_id: feature.id, direction: 'down'), {method: :post}
+        = link_to image_tag('/assets/down_btn.png', class: 'down_btn'), move_feature_project_bundle_path(feature_id: feature.id, direction: 'down'), {method: :post}
         .estimate_number
           = find_total_estimate(feature)
         %span.feature_name{'data-description'=> simple_format(feature.description)}= link_to feature.name, [@project, feature]

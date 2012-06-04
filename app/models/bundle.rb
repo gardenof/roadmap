@@ -5,7 +5,6 @@ class Bundle
 
   key :name,                      String,    required: true
   key :project_id,                ObjectId
-  key :positioned_feature_ids,    Array
   key :needing_discussion_order,  Array
   key :ready_for_estimate_order,  Array
   key :ready_to_schedule_order,   Array

@@ -171,7 +171,7 @@ describe BundlesController do
       feature_created.story_type.should eq("feature")
     end
 
-    it "doesnt create a feature for another project" do
+    it "doesn't create a feature for another project" do
       second_project = Factory :project
       project_one_bundle = bundle
 
@@ -286,6 +286,15 @@ describe BundlesController do
       bundle.ready_to_schedule_order.should == [second_feature.id, first_feature.id]
     end
 
+    it "it should raise error for bad feature" do
+      bad_feature = Factory.build :feature
+      bundle.ready_to_schedule_order = [first_feature.id]
+      bundle.save
+      lambda do
+        post :move_feature, move_feature_params('up', bad_feature)
+      end.should raise_error
+    end
+
     it "should not move up if feature at top for estimate column" do
       ready_for_estimate_feature_one = feature(nil, Time.now)
       ready_for_estimate_feature_two = feature(nil, Time.now)
@@ -357,10 +366,10 @@ describe BundlesController do
       bundle.needing_discussion_order.should == [needs_discussion_feature_a.id, needs_discussion_feature_b.id]
     end
 
-    it "should return back to project_bundle_show page if the direction setting is not up or down" do
-      post :move_feature, move_feature_params('left')
-      response.should redirect_to project_bundle_path
-      flash[:alert].should ==("Do not change direction settings for button!")
+    it "should raise error if the direction setting is not up or down" do
+      lambda do
+        post :move_feature, move_feature_params('left')
+      end.should raise_error
     end
   end
 end

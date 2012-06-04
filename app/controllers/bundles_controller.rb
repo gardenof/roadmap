@@ -13,7 +13,7 @@ class BundlesController < ApplicationController
     direction = params[:direction]
     @bundle = find_model(model_scope, params[:id])
     feature = Feature.find(params[:feature_id])
-
+    raise if feature.nil?
     case true
     when feature.needs_discussion?
       order = @bundle.needing_discussion_order
@@ -39,7 +39,6 @@ class BundlesController < ApplicationController
       @bundle.save
       flash[:notice] = "Feature was created"
     else
-      flash[:alert] = @feature.errors.full_messages
       populate_bundled_features(@bundle)
       return render 'show'
     end
@@ -110,7 +109,7 @@ class BundlesController < ApplicationController
       new_position_index = feature_index!= (order.count-1) ? (feature_index+1) : nil
       reposition_row(new_position_index, feature_index, feature, order)
     else
-      flash[:alert] = "Do not change direction settings for button!"
+      raise "Do not change direction settings for button!"
     end
   end
 
