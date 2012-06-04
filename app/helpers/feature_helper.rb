@@ -15,6 +15,6 @@ module FeatureHelper
   end
 
   def iteration_format(iteration)
-    iteration.asctime
+     iteration.day.to_s + " " + Date::MONTHNAMES[iteration.month - 1]
   end
 end

@@ -24,7 +24,8 @@
 
 .down_btn,.up_btn {
   float: right;
+  margin-top: -5px;
 }
 .down_btn {
-  margin-top: 3px;
+  margin-top: -2px;
 }
