@@ -59,10 +59,13 @@
       feature = Feature.find_by_story_id story.id
       feature ||= Feature.new
       feature.project_id = project.id
+      feature.update(story, refresh_time)
+      feature.iteration = "Mon Jun 02 12:03:15 -0700 2008"
+
       if feature.current_state == "unstarted"
         feature.iteration = new_hash[feature.story_id.to_s]
       end
-      feature.update(story, refresh_time).save
+      feature.save
     end
       mark_deleted_features(tracker_project,refresh_time)
       iteration(tracker_project.id)

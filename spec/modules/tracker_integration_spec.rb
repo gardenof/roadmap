@@ -9,7 +9,8 @@ describe TrackerIntegration do
                                         story_id: tracker_story_one.id}
     let (:tracker_project) {Factory.build :pivotal_gem_tracker_project,
                                         name: "New Value"}
-    before(:each) {TrackerIntegration.stub(:iteration)}
+    before(:each) {TrackerIntegration.stub(:iteration).and_return(
+                                {})}
 
     it "changes name of project" do
       project = Factory :project, tracker_project_id: tracker_project.id
@@ -29,7 +30,7 @@ describe TrackerIntegration do
       feature2.name.should == tracker_story_two.name
     end
 
-    it "save iteration to feature"do
+    it "save iteration to feature when current_state is unstarted" do
       feature = Factory :feature, story_id: tracker_story_one.id,
                                   current_state: "unstarted"
       feature.iteration.should == nil
@@ -39,6 +40,17 @@ describe TrackerIntegration do
 
       feature.reload
       feature.iteration.should_not == nil
+    end
+
+    it "sets feature iteration to nil once current_state is no longer unstarted" do
+      tracker_story_one.current_state = "accepted"
+      feature = Factory :feature, story_id: tracker_story_one.id,
+                                  current_state: "unstarted"
+      TrackerIntegration.stub(:iteration).and_return(
+                                {"#{tracker_story_one.id}" => Time.now})
+      TrackerIntegration.update_stories([tracker_story_one],tracker_project)
+
+      Feature.find_by_id(feature.id).iteration.should == "Mon Jun 02 12:03:15 -0700 2008"
     end
   end
 
