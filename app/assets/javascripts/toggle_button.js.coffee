@@ -4,10 +4,6 @@ split_path = path.split('/')
 Dropdown =
   page_identifier: split_path[split_path.length - 1],
 
-  show_form: ->
-    if this.page_identifier == "create_bundle_feature"
-      return true
-
 jQuery ->
 
   $('.bundled_toggle').click (e) ->
@@ -36,7 +32,7 @@ jQuery ->
     $('.new_form_dropdown')
       .slideToggle('fast')
 
-  if Dropdown.show_form
+  if Dropdown.page_identifier == "create_bundle_feature"
     $dropdown_form.trigger('click')
 
 

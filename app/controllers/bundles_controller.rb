@@ -4,6 +4,11 @@ class BundlesController < ApplicationController
   model_scope [:project]
   model_class Bundle
 
+  module DIRECTION 
+    UP = "up"
+    DOWN = "down"
+  end
+
   def move_feature
     direction = params[:direction]
     @bundle = find_model(model_scope, params[:id])
@@ -97,23 +102,22 @@ class BundlesController < ApplicationController
 
   def new_order(feature,order,direction)
     feature_index = order.index(feature.id)
-    # raise "wtf"
-    if direction == 'up'
+    case direction
+    when DIRECTION::UP
       new_position_index = feature_index!=0 ? (feature_index-1) : nil
-      if new_position_index != nil
-        order.slice!(feature_index)
-        order.insert(new_position_index,feature.id)
-      else
-        nil
-      end
-    elsif direction == 'down'
+      reposition_row(new_position_index, feature_index, feature, order)
+    when DIRECTION::DOWN
       new_position_index = feature_index!= (order.count-1) ? (feature_index+1) : nil
-        if new_position_index != nil
-          order.slice!(feature_index)
-          order.insert(new_position_index,feature.id)
-        else
-          nil
-        end
+      reposition_row(new_position_index, feature_index, feature, order)
+    else
+      flash[:alert] = "Do not change direction settings for button!"
+    end
+  end
+
+  def reposition_row(new_position_index, feature_index, feature, order)
+    if new_position_index != nil
+      order.slice!(feature_index)
+      order.insert(new_position_index,feature.id)
     end
   end
 
@@ -140,9 +144,9 @@ class BundlesController < ApplicationController
 
   def populate_bundled_features(bundle)
     @available_features = bundle.available_features
-    @bundled_features = bundle.features_ready_to_schedule(@bundle.ready_to_schedule_order)
-    @estimable_features = bundle.features_ready_for_estimate(@bundle.ready_for_estimate_order)
-    @features_needing_discussion = bundle.features_needing_discussion(@bundle.needing_discussion_order)
+    @bundled_features = bundle.features_ready_to_schedule
+    @estimable_features = bundle.features_ready_for_estimate
+    @features_needing_discussion = bundle.features_needing_discussion
   end
 
   def features_preserve_order_for_tracker(bundle)

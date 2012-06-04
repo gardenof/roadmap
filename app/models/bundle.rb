@@ -24,42 +24,32 @@ class Bundle
     @features ||= Feature.find_all_by_bundle_ids(id)
   end
 
-  def features_needing_discussion(position=[])
+  def features_needing_discussion
     features_needing_discussion=features.select { |f| f.needs_discussion? }
-    if features_needing_discussion.count > self.needing_discussion_order.count
-        self.needing_discussion_order.clear
-        features_needing_discussion.each do |feature|
-          self.needing_discussion_order.push(feature.id)
-        end
-        self.save
-    end
-    sort_features(features_needing_discussion, position)
+    populate_bundle_order_arrays(features_needing_discussion,self.needing_discussion_order)
+    sort_features(features_needing_discussion, self.needing_discussion_order)
   end
 
-  def features_ready_for_estimate(position=[])
+  def features_ready_for_estimate
     features_ready_for_estimate=features.select { |f| f.ready_for_estimate? }
+    populate_bundle_order_arrays(features_ready_for_estimate,self.ready_for_estimate_order)
+    sort_features(features_ready_for_estimate, self.ready_for_estimate_order)
+  end
 
-    if features_ready_for_estimate.count > self.ready_for_estimate_order.count
-        self.ready_for_estimate_order.clear
-        features_ready_for_estimate.each do |feature|
-          self.ready_for_estimate_order.push(feature.id)
+  def features_ready_to_schedule
+    features_ready_to_schedule = features.select { |f| f.ready_to_schedule? }
+    populate_bundle_order_arrays(features_ready_to_schedule,self.ready_to_schedule_order)
+    sort_features(features_ready_to_schedule, self.ready_to_schedule_order)
+  end
+
+  def populate_bundle_order_arrays(specified_features, order_array)
+     if specified_features.count > order_array.count
+        order_array.clear
+        specified_features.each do |feature|
+          order_array.push(feature.id)
         end
         self.save
     end
-    sort_features(features_ready_for_estimate, position)
-  end
-
-  def features_ready_to_schedule(position=[])
-    features_ready_to_schedule = features.select { |f| f.ready_to_schedule? }
-
-    if features_ready_to_schedule.count > self.ready_to_schedule_order.count
-      self.ready_to_schedule_order.clear
-      features_ready_to_schedule.each do |feature|
-          self.ready_to_schedule_order.push(feature.id)
-      end
-          self.save
-    end
-    sort_features(features_ready_to_schedule, position)
   end
 
   def sort_features(features_to_sort, order=[])
