@@ -1,4 +1,4 @@
-module TrackerIntegration
+  module TrackerIntegration
   module StoryType
     Bug = "bug"
     Feature = "feature"
@@ -47,16 +47,21 @@ module TrackerIntegration
 
   def self.update_stories(stories, tracker_project)
     refresh_time = Time.now
+    project = Project.find_by_tracker_project_id tracker_project.id
+    project ||= Project.new
+    project.tracker_project_id = tracker_project.id
+    project.name = tracker_project.name
+    project.refreshed_at = refresh_time
+    project.save
+    new_hash = iteration(tracker_project.id)
+
     stories.each do |story|
-      project = Project.find_by_tracker_project_id tracker_project.id
-      project ||= Project.new
-      project.tracker_project_id = tracker_project.id
-      project.name = tracker_project.name
-      project.refreshed_at = refresh_time
-      project.save
       feature = Feature.find_by_story_id story.id
       feature ||= Feature.new
       feature.project_id = project.id
+      if feature.current_state == "unstarted"
+        feature.iteration = new_hash[feature.story_id.to_s]
+      end
       feature.update(story, refresh_time).save
     end
       mark_deleted_features(tracker_project,refresh_time)
@@ -69,7 +74,7 @@ module TrackerIntegration
     iteration_hash(iteration_tracker_array, tracker_project_id)
   end
 
-  def self.iteration_hash(iteration_tracker_array, tracker_project_id)
+  def self.iteration_hash(iteration_tracker_array)
     new_hash= {}
     iteration_tracker_array.each do |date|
       it_date = date.start
@@ -80,11 +85,7 @@ module TrackerIntegration
         new_hash[story.id.to_s] = it_time
       end
     end
-    new_hash.each do |story_id, iter_date|
-      feature = Feature.find_by_story_id(story_id.to_i)
-      feature.iteration = iter_date
-      feature.save
-    end
+    new_hash
   end
 
   def self.mark_deleted_features(tracker_project,refresh_time)
