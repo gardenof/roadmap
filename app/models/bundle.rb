@@ -25,20 +25,33 @@ class Bundle
 
   def features_needing_discussion
     features_needing_discussion=features.select { |f| f.needs_discussion? }
-    populate_bundle_order_arrays(features_needing_discussion,self.needing_discussion_order)
-    sort_features(features_needing_discussion, self.needing_discussion_order)
+    prep_features(features_needing_discussion, self.needing_discussion_order)
   end
 
   def features_ready_for_estimate
     features_ready_for_estimate=features.select { |f| f.ready_for_estimate? }
-    populate_bundle_order_arrays(features_ready_for_estimate,self.ready_for_estimate_order)
-    sort_features(features_ready_for_estimate, self.ready_for_estimate_order)
+    prep_features(features_ready_for_estimate, self.ready_for_estimate_order)
   end
 
   def features_ready_to_schedule
     features_ready_to_schedule = features.select { |f| f.ready_to_schedule? }
-    populate_bundle_order_arrays(features_ready_to_schedule,self.ready_to_schedule_order)
-    sort_features(features_ready_to_schedule, self.ready_to_schedule_order)
+     prep_features(features_ready_to_schedule, self.ready_to_schedule_order)
+  end
+
+  def estimates_total
+    estimated_features = Feature.where(bundle_ids: id).where(estimate: {:$gte => 0}).all
+    estimated_features.inject(0) { |sum, f| sum += f.estimate }
+  end
+
+  def unestimated_count
+    Feature.where(bundle_ids: self.id).where(estimate: nil).count
+  end
+
+  protected
+
+  def prep_features(features_with_state, feature_state_array)
+    populate_bundle_order_arrays(features_with_state,feature_state_array)
+    sort_features(features_with_state,feature_state_array)
   end
 
   def populate_bundle_order_arrays(specified_features, order_array)
@@ -61,13 +74,4 @@ class Bundle
     sorted_features.compact
   end
 
-
-  def estimates_total
-    estimated_features = Feature.where(bundle_ids: id).where(estimate: {:$gte => 0}).all
-    estimated_features.inject(0) { |sum, f| sum += f.estimate }
-  end
-
-  def unestimated_count
-    Feature.where(bundle_ids: self.id).where(estimate: nil).count
-  end
 end

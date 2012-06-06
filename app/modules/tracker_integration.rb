@@ -74,7 +74,7 @@
   def self.iteration(tracker_project_id)
     tracker_project=PivotalTracker::Project.find(tracker_project_id)
     iteration_tracker_array = tracker_project.iteration(:backlog)
-    iteration_hash(iteration_tracker_array, tracker_project_id)
+    iteration_hash(iteration_tracker_array)
   end
 
   def self.iteration_hash(iteration_tracker_array)

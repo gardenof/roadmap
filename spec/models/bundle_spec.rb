@@ -72,29 +72,48 @@ describe "Bundle" do
     it "only counts unestimated features" do
       Factory :feature, estimate: 100, bundle_ids: [bundle.id]
       create_nil_features
-
       bundle.unestimated_count.should == 2
     end
   end
 
   describe "features_needing_discussion" do
+    let(:f) {Factory :feature, bundle_ids: [bundle.id], estimate: nil}
+    before(:each) {f}
     it "includes features needs_discussione" do
-      f = Factory :feature, bundle_ids: [bundle.id], estimate: nil
       bundle.features_needing_discussion.should include f
+    end
+
+    it "sorts features that needs discussion" do
+      f2 = Factory :feature, bundle_ids: [bundle.id], estimate: nil
+      f3 = Factory :feature, bundle_ids: [bundle.id], estimate: nil
+      bundle.features_needing_discussion.should == [f, f2, f3]
     end
   end
 
   describe "features_ready_for_estimate" do
+    let(:f) { Factory :feature, bundle_ids: [bundle.id], ready_for_estimate_at: Time.now, estimate: nil }
+    before(:each) {f}
     it "includes features ready_for_estimate" do
-      f = Factory :feature, bundle_ids: [bundle.id], ready_for_estimate_at: Time.now, estimate: nil
       bundle.features_ready_for_estimate.should include f
+    end
+
+    it "sorts features that are ready for estimate" do
+      f2 = Factory :feature, bundle_ids: [bundle.id], ready_for_estimate_at: Time.now, estimate: nil
+      f3 = Factory :feature, bundle_ids: [bundle.id], ready_for_estimate_at: Time.now, estimate: nil
+      bundle.features_ready_for_estimate.should == [f, f2, f3]
     end
   end
 
   describe "features_ready_to_schedule" do
+    let(:f) {Factory :feature, bundle_ids: [bundle.id], estimate: 3}
+    before(:each) {f}
     it "includes features with estimates" do
-      f = Factory :feature, bundle_ids: [bundle.id], estimate: 3
       bundle.features_ready_to_schedule.should include f
+    end
+    it "sorts features that are ready for schedule" do
+      f2 = Factory :feature, bundle_ids: [bundle.id], estimate: 3
+      f3 = Factory :feature, bundle_ids: [bundle.id], estimate: 3
+      bundle.features_ready_to_schedule.should == [f, f2, f3]
     end
   end
 end
