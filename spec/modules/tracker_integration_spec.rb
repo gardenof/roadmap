@@ -9,6 +9,16 @@ describe TrackerIntegration do
                                         story_id: tracker_story_one.id}
     let (:tracker_project) {Factory.build :pivotal_gem_tracker_project,
                                         name: "New Value"}
+    # before(:each) {TrackerIntegration.stub(:iteration).and_return(
+    #                             {})}
+
+    it "has correct number of arguments" do
+      PivotalTracker::Project.any_instance.stub(:stories).and_return(Project)
+      PivotalTracker::Project.any_instance.stub(:iteration).and_return([])
+      PivotalTracker::Project.stub(:find).and_return((Factory.build :pivotal_gem_tracker_project))
+
+      TrackerIntegration.update_project(tracker_project.id)
+    end
     before(:each) {TrackerIntegration.stub(:iteration).and_return(
                                 {})}
 
@@ -35,11 +45,11 @@ describe TrackerIntegration do
                                   current_state: "unstarted"
       feature.iteration.should == nil
       TrackerIntegration.stub(:iteration).and_return(
-                                {"#{tracker_story_one.id}" => Time.now,})
+                                {"#{tracker_story_one.id}" => '2012-06-06 15:55:40 -0400',})
       TrackerIntegration.update_stories([tracker_story_one],tracker_project)
 
       feature.reload
-      feature.iteration.should_not == nil
+      feature.iteration.should == '2012-06-06 15:55:40 -0400'
     end
 
     it "sets feature iteration to nil once current_state is no longer unstarted" do
