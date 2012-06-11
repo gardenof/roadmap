@@ -6,7 +6,8 @@
 //
 //= require jquery
 //= require jquery_ujs
-//
+//= require jquery-plugins
+//= require flipstone_charts
 //= require hamlcoffee
 //= require underscore
 //= require backbone
@@ -18,5 +19,4 @@
 //= require_tree ./views
 //= require_tree ./routers
 //= require_tree ./templates
-//= require flipstone_charts
 //= require_tree .
