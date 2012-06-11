@@ -1,0 +1,5 @@
+%h3 Hello Dude
+-for feature in @features.models
+  %li = feature.get('name')
+
+

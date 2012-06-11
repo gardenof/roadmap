@@ -28,6 +28,8 @@ gem "will_paginate", "~> 3.0.3"
 
 
 group :assets do
+  gem 'haml_coffee_assets'
+  gem 'execjs'
   gem 'therubyracer'
   gem 'sass-rails'
   gem 'uglifier'
@@ -41,4 +43,12 @@ group :test, :development, :cruise do
   gem 'rspec-rails'
   gem 'factory_girl'
   gem 'factory_girl_rails'
+  gem 'jasmine', '1.2.0.rc2',
+    git: "git://github.com/pivotal/jasmine-gem.git",
+    branch: "953d17dff4b4adba79b2a808b55cf33f4ff93af7"
+
+  gem 'jasmine-phantom', '>= 0.0.2'
+  gem 'rack-asset-compiler'
 end
+
+gem 'backbone-on-rails'
