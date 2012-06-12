@@ -1,5 +1,36 @@
-%h3 Hello Dude
--for feature in @features.models
-  %li = feature.get('name')
+.panelHeaderRight
+.panelHeaderLeft
+.panelHeader
+  %span.panelTitle #{@title} (#{@features.length})
+  - if @panel_class_name == "need-discussion"
+    %img.new_feature_toggle{src: '/assets/plus_btn.png'}
+- if @panel_class_name == "need-discussion"
+  .new_form_dropdown
 
+-for feature in @features
+  .feature
+    .collapsed-feature{class: feature.current_state}
+      %img.feature-toggle{src: '/assets/collapsed.png'}
+      -if feature.description != "" && feature.description != undefined
+        %img.feature-toggle.popup_btn{src: '/assets/description_popup_btn.png'}
+      %a{href: "#"}
+        %img{src:'/assets/up_btn.png', class: 'up_btn' }
+      %a{href: "#"}
+        %img{src:'/assets/down_btn.png', class: 'down_btn' }
+      .estimate_number = feature.estimate unless feature.estimate == undefined
+      %span.feature_name
+        %a{href: @urls.project_feature_path(feature.id)} = feature.name
+    .expanded-feature{class: feature.current_state}
+      %img.feature-toggle{src: '/assets/expanded.png'}
+      .estimate_number
+        = feature.estimate
+      %span.feature_name
+        %a{href: @urls.project_feature_path(feature.id)} = feature.name
+      .operations
+        / - if feature_operations
+        /   = render partial: feature_operations, locals: {feature: feature}
+      .status-tags
+      /   - if feature_status_tags
+      /     = render partial: feature_status_tags, locals: {feature: feature}
+      / = render partial: feature_form, locals: {feature: feature}
 

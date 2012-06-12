@@ -1,9 +1,15 @@
 class RoadmapBundles.Views.FeaturesIndex extends Backbone.View
+  tagName: "td"
+
+  className: "bundled panel"
 
   initialize: ->
-    @collection.on('reset', @render, this)
+    @urls = new RoadmapBundles.Urls.BundleShow()
 
-  render: ->
-    template = JST['features/index'](features: @collection)
+
+  render:(data) ->
+    template = JST['features/index'](features: data, title: "BUNDLED", panel_class_name: 'bundled', urls: @urls )
     $(@el).html(template)
     this
+
+

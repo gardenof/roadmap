@@ -2,10 +2,9 @@ window.RoadmapBundles =
   Models: {}
   Collections: {}
   Views: {}
-  Routers: {}
+  Urls: {}
   init: ->
-    router = new RoadmapBundles.Routers.Features()
-    Backbone.history.start(pushState: true)
+
 
 $(document).ready ->
   RoadmapBundles.init()

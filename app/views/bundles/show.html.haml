@@ -16,13 +16,6 @@
 
 %table.layout
   %tr
-    = render partial: 'shared/panel',
-      locals: { title: "BUNDLED",
-      total_estimates: "(#{@bundle.estimates_total}pts)",
-      features: @bundled_features,
-      panel_class_name: 'bundled',
-      feature_status_tags: 'features/bundled_status_tags'},
-      feature_form: 'features/bundled_form'
 
     = render partial: 'shared/panel',
       locals: { title: "UNESTIMATED",
@@ -35,3 +28,9 @@
       panel_class_name: 'need-discussion',
       features: @features_needing_discussion,
       feature_status_tags: 'features/needs_discussion_status_tags'}
+
+.hoho
+
+:javascript
+  view = new RoadmapBundles.Views.FeaturesIndex()
+  $('table.layout').find('tr').prepend(view.render(#{@bundle.features.to_json}).el)
