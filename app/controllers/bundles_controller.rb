@@ -1,8 +1,6 @@
 class BundlesController < ApplicationController
   include BilgePump::Controller
 
-  respond_to :json, :html
-
   model_scope [:project]
   model_class Bundle
 
@@ -51,10 +49,6 @@ class BundlesController < ApplicationController
     @feature = Feature.new
     @bundle = find_model(model_scope, params[:id])
     populate_bundled_features(@bundle)
-    respond_to do |format|
-      format.html
-      format.json {render json: @bundle.features}
-    end
   end
 
   def add_feature

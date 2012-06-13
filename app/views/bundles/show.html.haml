@@ -18,6 +18,14 @@
   %tr
 
     = render partial: 'shared/panel',
+      locals: { title: "BUNDLED",
+      total_estimates: "(#{@bundle.estimates_total}pts)",
+      features: @bundled_features,
+      panel_class_name: 'bundled',
+      feature_status_tags: 'features/bundled_status_tags'},
+      feature_form: 'features/bundled_form'
+
+    = render partial: 'shared/panel',
       locals: { title: "UNESTIMATED",
       panel_class_name: 'unestimated',
       features: @estimable_features,
@@ -33,4 +41,6 @@
 
 :javascript
   view = new RoadmapBundles.Views.FeaturesIndex()
-  $('table.layout').find('tr').prepend(view.render(#{@bundle.features.to_json}).el)
+  specified_features = #{@bundle.features_ready_to_schedule.to_json}
+  bundle_id = #{@bundle.id.to_json}
+  $('table.layout').find('tr').prepend(view.render(specified_features, bundle_id).el)

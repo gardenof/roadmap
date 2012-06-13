@@ -1,0 +1,6 @@
+#status-tags
+	= console.log "form_template_bundle_id: #{@bundle_id}, form_template_feature_id: #{@feature_id}"
+	%form{:"accept-charset" => "UTF-8", action: "/projects/roadmap/schedule", method: "post"}
+		%input{id: "feature_id", name: "feature_id", type: "hidden", value: @feature}
+		%input{id: "bundle_id", name: "bundle_id", type: "hidden", value: @bundle_id}
+		%input{:"data-confirm" => "Are you sure?  This is synchronous for the moment", name: "commit", type: "submit", value: "Schedule Feature"}
