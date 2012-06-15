@@ -1,0 +1,3 @@
+%form{:"accept-charset" => "UTF-8", action: @urls.remove_feature_project_bundle_path(@bundle.name), method: "post"}
+	%input{id: "feature_id", name: "feature_id", type: "hidden", value: @feature.id}
+	%input{name: "commit", type: "submit", value: "Remove from Bundle"}

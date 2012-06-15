@@ -1,0 +1,8 @@
+%form{:"accept-charset" => "UTF-8", action:"/projects/roadmap/features/4fda36778c0fc50238000c4d", method: "post"}
+  %div{style: "margin:0;padding:0;display:inline"}
+    %input{name: "utf8", type: "hidden", value: "&#10004;"}
+    %input{name: "_method", type: "hidden", value: "put" }
+  %input{id: "feature_estimate", name: "feature[estimate]", size: "3", type: "text"}
+  %input{id: "feature_ready_for_estimate_at", name: "feature[ready_for_estimate_at]", type: "hidden", value: new Date()}
+  %input{id: "redirect_to_bundle_id", name: "redirect_to_bundle_id", type:"hidden", value: "test-bundle"}
+  %input{name: "commit", type: "submit", value: "Save"}

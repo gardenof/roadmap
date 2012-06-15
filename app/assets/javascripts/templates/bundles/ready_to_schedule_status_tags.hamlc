@@ -1,0 +1,9 @@
+#status-tags
+	- if @feature.story_id == undefined
+		console.log "nigga where u at?!!"
+		%form{:"accept-charset" => "UTF-8", action: "/projects/roadmap/schedule", method: "post"}
+			%input{id: "feature_id", name: "feature_id", type: "hidden", value: @feature.id}
+			%input{id: "bundle_id", name: "bundle_id", type: "hidden", value: @bundle.id}
+			%input{:"data-confirm" => "Are you sure?  This is synchronous for the moment", name: "commit", type: "submit", value: "Schedule Feature"}
+	- else	
+		= @feature.current_state		

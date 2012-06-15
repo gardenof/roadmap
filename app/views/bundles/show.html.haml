@@ -16,7 +16,6 @@
 
 %table.layout
   %tr
-
     = render partial: 'shared/panel',
       locals: { title: "BUNDLED",
       total_estimates: "(#{@bundle.estimates_total}pts)",
@@ -37,10 +36,15 @@
       features: @features_needing_discussion,
       feature_status_tags: 'features/needs_discussion_status_tags'}
 
-.hoho
-
+  .hoho
+  
 :javascript
-  view = new RoadmapBundles.Views.FeaturesIndex()
-  specified_features = #{@bundle.features_ready_to_schedule.to_json}
-  bundle_id = #{@bundle.id.to_json}
-  $('table.layout').find('tr').prepend(view.render(specified_features, bundle_id).el)
+  ready_for_schedule_view = new RoadmapBundles.Views.FeaturesReadyForSchedule()
+  ready_for_estimate_view = new RoadmapBundles.Views.FeaturesReadyToEstimate()
+
+  ready_for_schedule_features = #{@bundle.features_ready_to_schedule.to_json}
+  ready_for_estimate_features = #{@bundle.features_ready_for_estimate.to_json}
+ 
+  bundle = #{@bundle.to_json}
+  $('table.layout').find('tr').append(ready_for_schedule_view.render(ready_for_schedule_features, bundle).el)
+  $('table.layout').find('tr').append(ready_for_estimate_view.render(ready_for_estimate_features, bundle).el)

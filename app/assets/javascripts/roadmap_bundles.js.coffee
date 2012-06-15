@@ -2,7 +2,7 @@ window.RoadmapBundles =
   Models: {}
   Collections: {}
   Views: {}
-  Urls: {}
+  Helper: {}
   init: ->
 
 

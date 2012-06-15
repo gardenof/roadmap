@@ -1,0 +1,6 @@
+%form{:"accept-charset" => "UTF-8", action: @urls.project_feature_path(@feature.id), method: "post"}
+  %div{style: "margin:0;padding:0;display:inline"}
+    %input{name: "utf8", type: "hidden", value: "&#10004;"}
+    %input{name: "_method", type: "hidden", value: "delete" }
+  %input{id: "redirect_to_bundle_id", name: "redirect_to_bundle_id", type: "hidden", value: @formatted_bundle_name}
+  %input{:"data-confirm" => "Are you sure?", name: "commit", type: "submit", value: "Delete Feature"}
