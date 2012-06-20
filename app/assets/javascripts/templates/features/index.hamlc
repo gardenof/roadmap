@@ -5,33 +5,32 @@
   - if @panel_class_name == "need-discussion"
     %img.new_feature_toggle{src: '/assets/plus_btn.png'}
 - if @panel_class_name == "need-discussion"
-  .new_form_dropdown
-
+  .new_form_dropdown 
+    
 -for feature in @features
   .feature
-    .collapsed-feature{class: feature.current_state}
+    .collapsed-feature{class: feature.get('current_state')}
       %img.feature-toggle{src: '/assets/collapsed.png'}
-      -if feature.description != "" && feature.description != undefined
+      -if feature.get('description') != "" && feature.get('description') != undefined
         %img.feature-toggle.popup_btn{src: '/assets/description_popup_btn.png'}
-      %a{href: "#{@urls.move_feature_project_bundle_path(feature.id, 'up')}", :"data-method" => "post", rel: "nofollow"}
+      %a{href: "#{@urls.move_feature_project_bundle_path(feature.get('id'), 'up')}", :"data-method" => "post", rel: "nofollow"}
         %img{src:'/assets/up_btn.png', class: 'up_btn' }
-      %a{href: "#{@urls.move_feature_project_bundle_path(feature.id, 'down')}", :"data-method" => "post", rel: "nofollow"}
+      %a{href: "#{@urls.move_feature_project_bundle_path(feature.get('id'), 'down')}", :"data-method" => "post", rel: "nofollow"}
         %img{src:'/assets/down_btn.png', class: 'down_btn' }
-      .estimate_number = feature.estimate unless feature.estimate == undefined
-      %span.feature_name
-        %a{href: @urls.project_feature_path(feature.id)} = feature.name
+      .estimate_number = feature.get('estimate') unless feature.get('estimate') == undefined
+      %span.feature_name{ :'data-description' => @bundle_helper.simpleFormat(feature.get('description'))}
+        %a{href: @urls.project_feature_path(feature.get('id'))} = feature.get('name')
       .status-tags
         - if @has_status_tags == true
-          = console.log @panel_class_name
-          != @bundle_helper.provide_status_tag_template(@panel_class_name, @urls, @bundle, feature)
-    .expanded-feature{class: feature.current_state}
+          != @bundle_helper.status_tag_template(@panel_class_name, @urls, @bundle, feature)
+    .expanded-feature{class: feature.get('current_state')}
       %img.feature-toggle{src: '/assets/expanded.png'}
       .estimate_number
-        = feature.estimate
+        = feature.get('estimate')
       %span.feature_name
-        %a{href: @urls.project_feature_path(feature.id)} = feature.name
+        %a{href: @urls.project_feature_path(feature.get('id'))} = feature.get('name')
       .operations
       .status-tags
         - if @has_status_tags == true
-          != @bundle_helper.provide_status_tag_template(@panel_class_name, @urls, @bundle, feature)
+          != @bundle_helper.status_tag_template(@panel_class_name, @urls, @bundle, feature)
       != JST["features/default_form"](feature: feature, bundle: @bundle, formatted_bundle_name: @bundle_helper.formatted_bundle_name(bundle.name), urls: @urls)

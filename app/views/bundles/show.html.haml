@@ -10,41 +10,17 @@
 %div#notice= notice
 %div#alert= alert
 
-
 = form_tag schedule_project_bundle_path(@project, @bundle) do |f|
   = submit_tag 'Send Bundle to Tracker', confirm: "This action will create in Tracker any features in the bundle (even undiscussed!) that have not yet been created in Tracker. Features previously sent to Tracker will not be modified."
 
 %table.layout
   %tr
-    = render partial: 'shared/panel',
-      locals: { title: "BUNDLED",
-      total_estimates: "(#{@bundle.estimates_total}pts)",
-      features: @bundled_features,
-      panel_class_name: 'bundled',
-      feature_status_tags: 'features/bundled_status_tags'},
-      feature_form: 'features/bundled_form'
 
-    = render partial: 'shared/panel',
-      locals: { title: "UNESTIMATED",
-      panel_class_name: 'unestimated',
-      features: @estimable_features,
-      feature_status_tags: 'features/unestimated_status_tags'}
 
-    = render partial: 'shared/panel',
-      locals: { title: "NEEDS DISCUSSION",
-      panel_class_name: 'need-discussion',
-      features: @features_needing_discussion,
-      feature_status_tags: 'features/needs_discussion_status_tags'}
-
-  .hoho
+= content_tag "div", "", id: "bootstraped_features", data: {features: @bundle.features} 
   
 :javascript
-  ready_for_schedule_view = new RoadmapBundles.Views.FeaturesReadyForSchedule()
-  ready_for_estimate_view = new RoadmapBundles.Views.FeaturesReadyToEstimate()
-
-  ready_for_schedule_features = #{@bundle.features_ready_to_schedule.to_json}
-  ready_for_estimate_features = #{@bundle.features_ready_for_estimate.to_json}
- 
+  project_name = (#{@project.name.to_json})
   bundle = #{@bundle.to_json}
-  $('table.layout').find('tr').append(ready_for_schedule_view.render(ready_for_schedule_features, bundle).el)
-  $('table.layout').find('tr').append(ready_for_estimate_view.render(ready_for_estimate_features, bundle).el)
+
+  view = new RoadmapBundles.Views.FeaturesMain (project_name, bundle)  

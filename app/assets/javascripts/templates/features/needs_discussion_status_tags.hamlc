@@ -1,0 +1,2 @@
+%form
+  %input{name: "commit", type: "submit", value: "Ready to Estimate"}

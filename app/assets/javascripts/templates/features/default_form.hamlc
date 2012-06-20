@@ -1,10 +1,10 @@
-%form{:"accept-charset" => "UTF-8", action: @urls.project_feature_path(@feature.id), method: "post", class: "edit_feature", id: "edit_feature_#{@feature.id}"}
+%form{:"accept-charset" => "UTF-8", action: @urls.project_feature_path(@feature.id), method: "post", class: "edit_feature", id: "edit_feature_#{@feature.get('id')}"}
   %div{style: "margin:0;padding:0;display:inline"}
     %input{name: "utf8", type: "hidden", value: "&#10004;"}
     %input{name: "_method", type: "hidden", value: "put" }
   .field
     %textarea{ cols: "40", id: "feature_description", name: "feature[description]", rows: "20"}
-      = @feature.description
+      = @feature.get('description')
   .field
     %input{id: "redirect_to_bundle_id", name: "redirect_to_bundle_id", type: "hidden", value: @formatted_bundle_name}
   .floatButton

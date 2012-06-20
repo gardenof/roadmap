@@ -1,0 +1,16 @@
+%div{style: "margin:0;padding:0;display:inline"}
+  %input{name: "utf8", type: "hidden", value: "&#10004;"}
+.field
+  %label{:for => "Name"} Name
+  %br
+    %input#feature_name{:name => "feature[name]", :type => "text"}
+.field
+  %label{:for => "tags"} Tags
+  %br
+    %input#feature_labels{:name => "feature[labels]", :size => "3", :type => "text", :value => ""}
+.field
+  %label{:for => "description"} Description
+  %br
+    %textarea#feature_description{:cols => "45", :name => "feature[description]", :rows => "10"}
+.field
+  %input{:name => "commit", :type => "submit", :value => "Save"}

@@ -3,12 +3,17 @@ class FeaturesController < ApplicationController
 
   model_scope [:project]
   model_class Feature
+  respond_to :html, :json
 
   PER_PAGE = 10
 
 
   def index
     @features = @project.features.paginate(page: params[:page], per_page: PER_PAGE)
+    respond_to do |format|
+      format.html
+      format.json { render @features.to_json }
+    end
   end
 
   def edit
@@ -36,7 +41,12 @@ class FeaturesController < ApplicationController
        return redirect_to project_bundle_path(@project, associated_bundle_id)
       end
     end
-    redirect_to project_feature_path(@project, @feature)
+
+    respond_to do |format|
+      format.html { redirect_to project_feature_path(@project, @feature) }
+      format.json { respond_with @feature.to_json }
+    end
+
   end
 
   def destroy

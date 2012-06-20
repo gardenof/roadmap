@@ -7,12 +7,6 @@ class RoadmapBundles.Helper.Url
 
   remove_feature_project_bundle_path: (bundle_name) ->
   	return "/projects/roadmap/bundles/test-bundle/remove_feature"
- 	
 
-
-
-
-
-
-
-
+  project_schedule_path: ->
+  	 "/projects/roadmap/schedule"

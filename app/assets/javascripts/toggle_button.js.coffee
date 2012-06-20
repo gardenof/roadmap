@@ -23,14 +23,3 @@ jQuery ->
     $wrapping_column= $('.layout')
     needs_discussion_column= $wrapping_column.find '.need-discussion'
     needs_discussion_column.toggle()
-
-
-  $dropdown_form = $('.new_feature_toggle')
-
-  $dropdown_form.bind 'click', ->
-    $('.new_form_dropdown')
-      .slideToggle('fast')
-
-  if Dropdown.page_identifier == "create_bundle_feature"
-    $dropdown_form.trigger('click')
-

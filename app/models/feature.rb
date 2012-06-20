@@ -23,7 +23,7 @@ class Feature
   key :project_id,            ObjectId
   belongs_to :project
 
-  key :bundle_ids,            Array
+  key :bundle_ids,            Array, :typecast => 'ObjectId'
   many :bundles, :in => :bundle_ids
 
   scope :with_label, -> label do
