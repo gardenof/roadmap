@@ -8,6 +8,7 @@ module Projects
     end
 
     def run_refresh
+      PivotalTracker::Client.use_ssl = true
       TrackerIntegration.update_project(@project.tracker_project_id)
       flash[:notice] = 'Features fetched and updated.  Sorry for the wait.'
       redirect_to project_path(@project)
